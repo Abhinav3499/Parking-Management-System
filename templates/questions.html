@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Set New Question</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: row; /* Side by side panels */
+        background: linear-gradient(to bottom right, #f56565, #ed64a6);
+      }
+
+      /* Left panel (1/5) */
+      .left-panel {
+        width: 20%;
+        background: #fff;
+        padding: 2rem;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100vh;
+      }
+
+      .left-panel h4, .left-panel h5 {
+        margin-bottom: 1rem;
+      }
+
+      /* Right panel (4/5) */
+      .right-panel {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 600px;
+        padding: 2rem;
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-control {
+        margin-bottom: 1rem;
+      }
+
+      .question-option:hover {
+        background: #e9ecef;
+      }
+
+      .submit-btn {
+        background: linear-gradient(to right, #4caf50, #8bc34a);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .submit-btn:hover {
+        background: linear-gradient(to right, #388e3c, #689f38);
+        transform: scale(1.05);
+      }
+
+      .discard-btn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        margin-top: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .discard-btn:hover {
+        background-color: #d32f2f;
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Left Panel (1/5) -->
+    <div class="left-panel">
+      <h4 class="fw-bold">Current Subject: <span>Mathematics</span></h4>
+      <h5 class="fw-bold">Chapter: <span>Algebra</span></h5>
+      <div>
+        <button class="btn submit-btn w-100 mt-3">Add Quiz</button>
+        <button class="btn discard-btn w-100 mt-3">Discard</button>
+      </div>
+    </div>
+
+    <!-- Right Panel (4/5) -->
+    <div class="right-panel">
+      <div class="card">
+        <h3 class="text-center mb-4 fw-bold">Set New Question</h3>
+        <form id="new-question-form">
+          <div class="mb-3">
+            <label for="question" class="form-label">Question</label>
+            <textarea
+              class="form-control"
+              id="question"
+              rows="3"
+              placeholder="Enter the question"
+              required
+            ></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="optionA" class="form-label">Option A</label>
+            <input
+              type="text"
+              class="form-control"
+              id="optionA"
+              placeholder="Enter Option A"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="optionB" class="form-label">Option B</label>
+            <input
+              type="text"
+              class="form-control"
+              id="optionB"
+              placeholder="Enter Option B"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="optionC" class="form-label">Option C</label>
+            <input
+              type="text"
+              class="form-control"
+              id="optionC"
+              placeholder="Enter Option C"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="optionD" class="form-label">Option D</label>
+            <input
+              type="text"
+              class="form-control"
+              id="optionD"
+              placeholder="Enter Option D"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="correct-option" class="form-label">Correct Option</label>
+            <select class="form-control" id="correct-option" required>
+              <option value="" disabled selected>Select correct option</option>
+              <option value="A">Option A</option>
+              <option value="B">Option B</option>
+              <option value="C">Option C</option>
+              <option value="D">Option D</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn submit-btn w-100 mt-3">
+            Save Question
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("new-question-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        // Collecting form data
+        const question = document.getElementById("question").value;
+        const optionA = document.getElementById("optionA").value;
+        const optionB = document.getElementById("optionB").value;
+        const optionC = document.getElementById("optionC").value;
+        const optionD = document.getElementById("optionD").value;
+        const correctOption = document.getElementById("correct-option").value;
+
+        // For now, just logging the data to the console
+        console.log({
+          question,
+          options: { A: optionA, B: optionB, C: optionC, D: optionD },
+          correctOption,
+        });
+
+        // Displaying a confirmation message
+        alert("Question saved successfully!");
+      });
+    </script>
+  </body>
+</html>

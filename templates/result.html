@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz Results</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(to top right, #00c6ff, #ffffff); /* Aqua blue gradient */
+        margin: 0px;
+        padding: 0px;
+      }
+      .results-card {
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        padding: 30px;
+      }
+      .result-header {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #343a40;
+      }
+      .result-details {
+        font-size: 1.2rem;
+        margin-top: 20px;
+      }
+      .submit-btn {
+        background: linear-gradient(to right, #4caf50, #8bc34a); /* Green gradient */
+        color: white;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+      .submit-btn:hover {
+        background: linear-gradient(to right, #388e3c, #689f38); /* Darker green gradient */
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column vh-100">
+    <!-- Results Section -->
+    <div class="container d-flex flex-column align-items-center justify-content-center flex-grow-1">
+      <div class="results-card w-75">
+        <div class="result-header text-center">Quiz Results</div>
+
+        <div class="result-details">
+          <div class="mb-3">
+            <strong>Total Correct:</strong> <span id="total-correct">5</span>
+          </div>
+          <div class="mb-3">
+            <strong>Accuracy:</strong> <span id="accuracy">80%</span>
+          </div>
+          <div class="mb-3">
+            <strong>Time per Question:</strong> <span id="time-per-question">30s</span>
+          </div>
+          <div class="mb-3">
+            <strong>Total Marks:</strong> <span id="total-marks">40</span>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+          <button class="submit-btn px-4 py-3 fw-bold rounded">
+            Go to Home
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // This would be dynamic data after quiz submission
+      const totalCorrect = 5;
+      const totalQuestions = 6;
+      const timePerQuestion = 30; // in seconds
+      const totalMarks = totalCorrect * 8; // Assuming 8 marks per question
+      const accuracy = ((totalCorrect / totalQuestions) * 100).toFixed(0);
+
+      // Set result details dynamically
+      document.getElementById("total-correct").textContent = totalCorrect;
+      document.getElementById("accuracy").textContent = `${accuracy}%`;
+      document.getElementById("time-per-question").textContent = `${timePerQuestion}s`;
+      document.getElementById("total-marks").textContent = totalMarks;
+    </script>
+  </body>
+</html>
