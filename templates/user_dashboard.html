@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+</head>
+<body>
+    <h2>User Dashboard</h2>
+    <p>Select a subject and chapter to start the quiz:</p>
+    
+    <form action="/start-quiz" method="POST">
+        <!-- Subject Selection -->
+        <label for="subject">Select Subject:</label><br>
+        <select id="subject" name="subject" required>
+            <option value="" disabled selected>-- Select Subject --</option>
+            <option value="math">Mathematics</option>
+            <option value="science">Science</option>
+            <option value="history">History</option>
+            <option value="english">English</option>
+        </select><br><br>
+
+        <!-- Chapter Selection -->
+        <label for="chapter">Select Chapter:</label><br>
+        <select id="chapter" name="chapter" required>
+            <option value="" disabled selected>-- Select Chapter --</option>
+            <option value="chapter1">Chapter 1</option>
+            <option value="chapter2">Chapter 2</option>
+            <option value="chapter3">Chapter 3</option>
+        </select><br><br>
+
+        <!-- Start Quiz Button -->
+        <button type="submit">Start Quiz</button>
+    </form>
+</body>
+</html>

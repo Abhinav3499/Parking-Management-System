@@ -4,57 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
-            font-family: Arial, sans-serif;
-        }
-        .start-card {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .start-card h1 {
-            margin-bottom: 20px;
-            color: #343a40;
-            font-size: 2rem;
-        }
-        .btn-custom {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            border-radius: 8px;
-        }
-        .btn-user {
-            background-color: #4caf50;
-            color: white;
-        }
-        .btn-user:hover {
-            background-color: #45a049;
-        }
-        .btn-admin {
-            background-color: #f44336;
-            color: white;
-        }
-        .btn-admin:hover {
-            background-color: #e53935;
-        }
-    </style>
 </head>
 <body>
-    <div class="start-card">
-        <h1>Welcome to the Portal</h1>
-        <a href="/user-login" class="btn btn-custom btn-user">User Login</a>
-        <a href="/admin-login" class="btn btn-custom btn-admin">Admin Login</a>
-    </div>
+    <h1>Welcome to the Quiz App</h1>
+    <a href="{{ url_for('user_login') }}"><button>User Login</button></a>
+    <a href="{{ url_for('admin_login') }}"><button>Admin Login</button></a>
 </body>
 </html>
