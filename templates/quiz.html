@@ -3,36 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Page</title>
+    <title>{{ quiz.title }}</title>
 </head>
 <body>
-    <h2>Quiz</h2>
-
-    <!-- Question Section -->
-    <div id="question-container">
-        <p id="question">Question 1: What is the capital of France?</p>
-        <form id="quiz-form">
-            <!-- Options -->
-            <input type="radio" id="option1" name="answer" value="Paris" required>
-            <label for="option1">Paris</label><br>
-
-            <input type="radio" id="option2" name="answer" value="London">
-            <label for="option2">London</label><br>
-
-            <input type="radio" id="option3" name="answer" value="Berlin">
-            <label for="option3">Berlin</label><br>
-
-            <input type="radio" id="option4" name="answer" value="Madrid">
-            <label for="option4">Madrid</label><br>
-        </form>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div id="navigation-buttons">
-        <button type="button" id="prev-btn" onclick="prevQuestion()">Previous</button>
-        <button type="button" id="next-btn" onclick="nextQuestion()">Next</button>
-        <button type="button" id="submit-btn" onclick="submitQuiz()">Submit</button>
-    </div>
-
+    <h2>{{ quiz.title }}</h2>
+    <form method="POST">
+        {% for question in questions %}
+            <p>{{ question.question_text }}</p>
+            <input type="radio" name="question_{{ question.id }}" value="A" required>{{ question.option_a }}<br>
+            <input type="radio" name="question_{{ question.id }}" value="B">{{ question.option_b }}<br>
+            <input type="radio" name="question_{{ question.id }}" value="C">{{ question.option_c }}<br>
+            <input type="radio" name="question_{{ question.id }}" value="D">{{ question.option_d }}< ```html
+            <br>
+        {% endfor %}
+        <button type="submit">Submit Quiz</button>
+    </form>
 </body>
 </html>
