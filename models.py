@@ -1,16 +1,19 @@
 from app import app
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False)
+    passhash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
     attempts = db.relationship('Attempt', backref='user', lazy=True)
+
+    def check_password(self, password):
+        return check_password_hash(self.passhash, password)
 
 class Quiz(db.Model):
     quiz_id = db.Column(db.Integer, primary_key=True)
@@ -35,5 +38,5 @@ class Attempt(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.quiz_id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey('question.question_id'), nullable=False)
-    choice = db.Column(db.String(1), nullable=False)  # 
+    choice = db.Column(db.String(1), nullable=False) 
     is_correct = db.Column(db.Boolean, default=False)
