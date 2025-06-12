@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
 </head>
 <body>
     <h1>Login</h1>
     <form action="/login" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" >
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" >
-        <br>
+        <label>Username:</label>
+        <input type="text" name="username" required><br>
+        <label>Password:</label>
+        <input type="password" name="password" required><br>
         <input type="submit" value="Login">
-        <input type="submit" value="Register" formaction="/register">
     </form>
+    <br>
+    <button type="button" onclick="window.location.href='/register'">Register</button>
 </body>
 </html>
