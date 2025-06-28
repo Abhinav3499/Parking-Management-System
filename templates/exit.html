@@ -17,9 +17,12 @@
         <tr><th>Price per Hour</th><td>{{ lot.price }}</td></tr>
         <tr><th>Total Amount</th><td>{{ total_amount }}</td></tr>
     </table>
-    <form action="" method="post">
-        <button type="submit">Release</button>
+    <p>Total Hours (rounded up): {{ hours }}</p>
+    <p>Total Amount Due: ${{ "%.2f"|format(total_amount) }}</p>
+
+    <form action="{{ url_for('user.exit_parking', record_id=record.id) }}" method="post">
+        <button type="submit">Confirm Exit & Pay</button>
     </form>
-    <button onclick="location.href='/user/history'">Cancel</button>
+    <a href="{{ url_for('user.history') }}">Back</a>
 </body>
 </html> 

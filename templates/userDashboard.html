@@ -5,13 +5,14 @@
     <title>User Dashboard</title>
 </head>
 <body>
-    <h1>User Dashboard</h1>
-    <button onclick="location.href='/user/book'">Book</button>
-    <button onclick="location.href='/user/history'">Booking History</button>
-    <button onclick="location.href='/user/summary'">Summary</button>
-    <button onclick="location.href='/edit_profile'">Edit Profile</button>
-    <form action="/logout" method="get" style="display:inline;">
-        <button type="submit">Logout</button>
-    </form>
+    <h2>User Dashboard</h2>
+    <p>Welcome, {{ username }}!</p>
+    <ul>
+        <li><a href="{{ url_for('user.book_parking') }}">Book a Parking Spot</a></li>
+        <li><a href="{{ url_for('user.history') }}">View Parking History</a></li>
+        <li><a href="{{ url_for('user.summary') }}">View Summary</a></li>
+        <li><a href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
+    </ul>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html>

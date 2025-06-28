@@ -5,16 +5,19 @@
     <title>Search Parking Lots</title>
 </head>
 <body>
-    <h1>Search Parking Lots</h1>
-    <form method="post">
+    <h2>Search Parking Lots</h2>
+    <form action="{{ url_for('admin.search') }}" method="post">
         <label for="location">Location:</label>
         <input type="text" id="location" name="location">
-        <label for="pin">Pin:</label>
-        <input type="number" id="pin" name="pin">
-        <input type="submit" value="Search">
+        <label for="pin">PIN Code:</label>
+        <input type="text" id="pin" name="pin">
+        <button type="submit">Search</button>
     </form>
+
+    <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
+
     {% if results is not none %}
-        <h2>Results</h2>
+        <h3>Search Results</h3>
         <table border="1">
             <tr>
                 <th>Location</th>
@@ -24,18 +27,23 @@
                 <th>Price/Hour</th>
                 <th>Occupied</th>
             </tr>
+            <tbody>
             {% for lot in results %}
-            <tr>
-                <td>{{ lot.location }}</td>
-                <td>{{ lot.address }}</td>
-                <td>{{ lot.pin }}</td>
-                <td>{{ lot.total_spots }}</td>
-                <td>{{ lot.price }}</td>
-                <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
-            </tr>
+                <tr>
+                    <td>{{ lot.location }}</td>
+                    <td>{{ lot.address }}</td>
+                    <td>{{ lot.pin }}</td>
+                    <td>{{ lot.total_spots }}</td>
+                    <td>${{ "%.2f"|format(lot.price) }}</td>
+                    <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No parking lots found.</td>
+                </tr>
             {% endfor %}
+            </tbody>
         </table>
     {% endif %}
-    <button onclick="location.href='/admin'">Back to Dashboard</button>
 </body>
 </html> 

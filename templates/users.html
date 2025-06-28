@@ -24,6 +24,9 @@
         </tr>
         {% endfor %}
     </table>
-    <button onclick="location.href='/admin'">Back to Dashboard</button>
+    {% else %}
+        <p>No users found.</p>
+    {% endif %}
+    <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
 </body>
 </html> 

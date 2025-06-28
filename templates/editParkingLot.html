@@ -5,18 +5,18 @@
     <title>Edit Parking Lot</title>
 </head>
 <body>
-    <h1>Edit Parking Lot</h1>
+    <h2>Edit Parking Lot: {{ lot.location }} - {{ lot.address }}</h2>
     {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-    <form action="" method="POST">
+    <form action="{{ url_for('admin.edit_parking_lot', lot_id=lot.id) }}" method="post">
         <p>Location: {{ lot.location }}</p>
         <p>Address: {{ lot.address }}</p>
         <p>Pin: {{ lot.pin }}</p>
-        <label for="spots">Number of Spots:</label>
-        <input type="number" id="spots" name="spots" value="{{ lot.total_spots }}" required><br>
+        <label for="spots">Total Spots:</label>
+        <input type="number" id="spots" name="spots" value="{{ lot.total_spots }}" required><br><br>
         <label for="price">Price per Hour:</label>
-        <input type="number" step="0.01" id="price" name="price" value="{{ lot.price }}" required><br>
-        <input type="submit" value="Update">
+        <input type="number" step="0.01" id="price" name="price" value="{{ lot.price }}" required><br><br>
+        <button type="submit">Update Parking Lot</button>
     </form>
-    <button onclick="location.href='/admin/viewParkingLots'">Back</button>
+    <a href="{{ url_for('admin.view_parking_lots') }}">Back</a>
 </body>
 </html> 

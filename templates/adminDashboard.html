@@ -6,13 +6,14 @@
 </head>
 <body>
     <h1>Admin Dashboard</h1>
-    <button onclick="location.href='/admin/addParkingLot'">Add Parking Lot</button>
-    <button onclick="location.href='/admin/viewParkingLots'">View/Edit/Delete Parking Lots</button>
-    <button onclick="location.href='/admin/users'">Users</button>
-    <button onclick="location.href='/edit_profile'">Edit Profile</button>
-    <button onclick="location.href='/admin/search'">Search</button>
-    <form action="/logout" method="get" style="display:inline;">
-        <button type="submit">Logout</button>
-    </form>
+    <p>Welcome, {{ session.username }}!</p>
+    <ul>
+        <li><a href="{{ url_for('admin.add_parking_lot') }}">Add Parking Lot</a></li>
+        <li><a href="{{ url_for('admin.view_parking_lots') }}">View/Edit/Delete Parking Lots</a></li>
+        <li><a href="{{ url_for('admin.users') }}">View Users</a></li>
+        <li><a href="{{ url_for('admin.search') }}">Search Parking Lots</a></li>
+        <li><a href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
+    </ul>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html>

@@ -6,8 +6,9 @@
 </head>
 <body>
     <h1>Add Parking Lot</h1>
+    <h2>Add New Parking Lot</h2>
     {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-    <form action="/admin/addParkingLot" method="POST">
+    <form action="{{ url_for('admin.add_parking_lot') }}" method="post">
         <label for="location">Location:</label>
         <input type="text" id="location" name="location" required><br>
         <label for="address">Address:</label>
@@ -17,9 +18,9 @@
         <label for="spots">Number of Spots:</label>
         <input type="number" id="spots" name="spots" required><br>
         <label for="price">Price per Hour:</label>
-        <input type="number" step="0.01" id="price" name="price" required><br>
-        <input type="submit" value="Add Parking Lot">
+        <input type="number" id="price" name="price" step="0.01" required><br>
+        <button type="submit">Add Parking Lot</button>
     </form>
-    <button onclick="location.href='/admin'">Back to Dashboard</button>
+    <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
 </body>
 </html>

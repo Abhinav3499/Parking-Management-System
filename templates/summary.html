@@ -38,5 +38,10 @@
             <div class="stat">{{ most_visited_location or 'None' }}</div>
         </div>
     </div>
+
+    <p>Most Visited Location: {{ most_visited_location if most_visited_location else 'N/A' }}</p>
+
+    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html> 

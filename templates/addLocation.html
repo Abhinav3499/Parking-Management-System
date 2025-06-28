@@ -17,7 +17,7 @@
 
     <div class="container">
         <h1>Add Location</h1>
-        <form action="/admin/addLocation" method="POST">
+        <form action="{{ url_for('admin.add_location') }}" method="POST">
             <label for="name">Location Name:</label>
             <input type="text" id="name" name="name" required><br>
             <label for="address">Address:</label>

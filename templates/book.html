@@ -5,9 +5,11 @@
     <title>Book a Parking Spot</title>
 </head>
 <body>
-    <h1>Book a Parking Spot</h1>
-    <form action="/user/book" method="POST">
-        <label for="location">Select Location:</label>
+    <h2>Book Parking</h2>
+    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+
+    <form action="{{ url_for('user.book_parking') }}" method="post">
+        <label for="location">Choose a Location:</label>
         <select id="location" name="location" required>
             <option value="">Choose a location...</option>
             {% for loc in locations %}
@@ -18,39 +20,27 @@
     </form>
     <br>
     {% if parking_lots %}
-        <h2>Available Parking Lots at {{ selected_location }}</h2>
-        <table border="1">
-            <tr>
-                <th>Address</th>
-                <th>Pin</th>
-                <th>Spots</th>
-                <th>Price/Hour</th>
-                <th>Occupied</th>
-                <th>Action</th>
-            </tr>
+        <h3>Available Lots at {{ selected_location }}</h3>
+        <ul>
             {% for lot in parking_lots %}
-            <tr>
-                <td>{{ lot.address }}</td>
-                <td>{{ lot.pin }}</td>
-                <td>{{ lot.total_spots }}</td>
-                <td>{{ lot.price }}</td>
-                <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
-                <td>
-                    {% if lot.status and lot.status.filledCount < lot.total_spots %}
-                    <form action="/user/book/confirm" method="POST">
-                        <input type="hidden" name="lot_id" value="{{ lot.id }}">
-                        <input type="text" name="vehicle_number" placeholder="Vehicle Number" required>
-                        <button type="submit">Book</button>
-                    </form>
-                    {% else %}Full{% endif %}
-                </td>
-            </tr>
+                <li>
+                    {{ lot.address }} (PIN: {{ lot.pin }}) - 
+                    Spots Left: {{ lot.total_spots - (lot.status.filledCount if lot.status else 0) }} - 
+                    Price: ${{ "%.2f"|format(lot.price) }}/hr
+                    {% if lot.total_spots - (lot.status.filledCount if lot.status else 0) > 0 %}
+                        <form action="{{ url_for('user.confirm_booking') }}" method="post" style="display:inline;">
+                            <input type="hidden" name="lot_id" value="{{ lot.id }}">
+                            <label for="vehicle_number_{{ lot.id }}">Vehicle Number:</label>
+                            <input type="text" id="vehicle_number_{{ lot.id }}" name="vehicle_number" required>
+                            <button type="submit">Book</button>
+                        </form>
+                    {% else %}
+                        <span>Full</span>
+                    {% endif %}
+                </li>
             {% endfor %}
-        </table>
+        </ul>
     {% endif %}
-    <button onclick="location.href='/user'">Back to Dashboard</button>
-    <form action="/logout" method="get" style="display:inline;">
-        <button type="submit">Logout</button>
-    </form>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html>

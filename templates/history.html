@@ -13,6 +13,7 @@
             <th>Vehicle</th>
             <th>Parking Time</th>
             <th>Exit Time</th>
+            <th>Price</th>
             <th>Action</th>
         </tr>
         {% for record in parking_history %}
@@ -22,16 +23,18 @@
             <td>{{ record.lot_pin }}</td>
             <td>{{ record.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ record.exit_time.strftime('%Y-%m-%d %H:%M:%S') if record.exit_time else 'Active' }}</td>
+            <td>${{ "%.2f"|format(record.price_at_booking) }}</td>
             <td>
-                {% if not record.exit_time %}
-                <form action="/user/exit/{{ record.id }}" method="get">
-                    <button type="submit">Exit</button>
-                </form>
-                {% else %}Exited{% endif %}
+                {% if record.exit_time is none %}
+                    <a href="{{ url_for('user.exit_parking', record_id=record.id) }}">Exit</a>
+                {% else %}
+                    Completed
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
-    <button onclick="location.href='/user'">Back to Dashboard</button>
+    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
 </body>
 </html>
