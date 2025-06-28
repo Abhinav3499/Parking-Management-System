@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book</title>
+    <title>Booking History</title>
 </head>
 <body>
     <h1>Booking History</h1>
     <table border="1">
         <tr>
-            <th>Lot</th>
             <th>Location</th>
+            <th>Lot</th>
             <th>Vehicle</th>
             <th>Parking Time</th>
             <th>Exit Time</th>
@@ -18,14 +17,14 @@
         </tr>
         {% for record in parking_history %}
         <tr>
-            <td>{{ record.location.parking_lots[0].id if record.location.parking_lots else 'N/A' }}</td>
-            <td>{{ record.location.name }}</td>
-            <td>{{ record.vehicle_number }}</td>
-            <td>{{ record.parking_time }}</td>
-            <td>{{ record.exit_time if record.exit_time else 'Active' }}</td>
+            <td>{{ record.lot_location }}</td>
+            <td>{{ record.lot_address }}</td>
+            <td>{{ record.lot_pin }}</td>
+            <td>{{ record.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ record.exit_time.strftime('%Y-%m-%d %H:%M:%S') if record.exit_time else 'Active' }}</td>
             <td>
                 {% if not record.exit_time %}
-                <form action="/user/exit/{{ record.id }}" method="POST">
+                <form action="/user/exit/{{ record.id }}" method="get">
                     <button type="submit">Exit</button>
                 </form>
                 {% else %}Exited{% endif %}
@@ -33,5 +32,6 @@
         </tr>
         {% endfor %}
     </table>
+    <button onclick="location.href='/user'">Back to Dashboard</button>
 </body>
 </html>

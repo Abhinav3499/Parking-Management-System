@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Release Parking Spot</title>
+</head>
+<body>
+    <h1>Release Parking Spot</h1>
+    <table border="1">
+        <tr><th>Location</th><td>{{ lot.location }}</td></tr>
+        <tr><th>Address</th><td>{{ lot.address }}</td></tr>
+        <tr><th>Pin</th><td>{{ lot.pin }}</td></tr>
+        <tr><th>Vehicle Number</th><td>{{ record.vehicle_number }}</td></tr>
+        <tr><th>Parking Time</th><td>{{ record.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</td></tr>
+        <tr><th>Current Time</th><td>{{ now.strftime('%Y-%m-%d %H:%M:%S') }}</td></tr>
+        <tr><th>Hours (Ceil)</th><td>{{ hours }}</td></tr>
+        <tr><th>Price per Hour</th><td>{{ lot.price }}</td></tr>
+        <tr><th>Total Amount</th><td>{{ total_amount }}</td></tr>
+    </table>
+    <form action="" method="post">
+        <button type="submit">Release</button>
+    </form>
+    <button onclick="location.href='/user/history'">Cancel</button>
+</body>
+</html> 

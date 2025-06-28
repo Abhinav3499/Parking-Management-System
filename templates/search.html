@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Parking Lots</title>
+</head>
+<body>
+    <h1>Search Parking Lots</h1>
+    <form method="post">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location">
+        <label for="pin">Pin:</label>
+        <input type="number" id="pin" name="pin">
+        <input type="submit" value="Search">
+    </form>
+    {% if results is not none %}
+        <h2>Results</h2>
+        <table border="1">
+            <tr>
+                <th>Location</th>
+                <th>Address</th>
+                <th>Pin</th>
+                <th>Spots</th>
+                <th>Price/Hour</th>
+                <th>Occupied</th>
+            </tr>
+            {% for lot in results %}
+            <tr>
+                <td>{{ lot.location }}</td>
+                <td>{{ lot.address }}</td>
+                <td>{{ lot.pin }}</td>
+                <td>{{ lot.total_spots }}</td>
+                <td>{{ lot.price }}</td>
+                <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    <button onclick="location.href='/admin'">Back to Dashboard</button>
+</body>
+</html> 

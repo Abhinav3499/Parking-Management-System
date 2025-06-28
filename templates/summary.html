@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Parking Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="back-button">
+        <button onclick="location.href='/user'">← Back to Dashboard</button>
+    </div>
+    <div class="header-buttons">
+        <form action="/logout" method="get" style="display:inline;">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h1>Parking Summary</h1>
+        
+        <div class="summary-card">
+            <h2>Total Bookings</h2>
+            <div class="stat">{{ total_bookings }}</div>
+        </div>
+        
+        <div class="summary-card">
+            <h2>Active Bookings</h2>
+            <div class="stat">{{ active_bookings }}</div>
+        </div>
+        
+        <div class="summary-card">
+            <h2>Completed Bookings</h2>
+            <div class="stat">{{ completed_bookings }}</div>
+        </div>
+        
+        <div class="summary-card">
+            <h2>Most Visited Location</h2>
+            <div class="stat">{{ most_visited_location or 'None' }}</div>
+        </div>
+    </div>
+</body>
+</html> 

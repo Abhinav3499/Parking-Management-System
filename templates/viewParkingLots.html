@@ -2,17 +2,41 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>View Parking Lots</title>
+    <title>Parking Lots</title>
   </head>
   <body>
     <h1>Parking Lots</h1>
-    {% for location in locations %}
-        <h2>{{ location.name }} ({{ location.address }}, {{ location.pin }})</h2>
-        <ul>
-        {% for lot in location.parking_lots %}
-            <li>Lot ID: {{ lot.id }}, Total Spots: {{ lot.total_spots }}, Price: {{ lot.price }}</li>
+    <table border="1">
+        <tr>
+            <th>Location</th>
+            <th>Address</th>
+            <th>Pin</th>
+            <th>Spots</th>
+            <th>Price/Hour</th>
+            <th>Occupied</th>
+            <th>Actions</th>
+        </tr>
+        {% for lot in parking_lots %}
+        <tr>
+            <td>{{ lot.location }}</td>
+            <td>{{ lot.address }}</td>
+            <td>{{ lot.pin }}</td>
+            <td>{{ lot.total_spots }}</td>
+            <td>{{ lot.price }}</td>
+            <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
+            <td>
+                <form action="/admin/editParkingLot/{{ lot.id }}" method="get" style="display:inline;">
+                    <button type="submit">Edit</button>
+                </form>
+                {% if not lot.status or lot.status.filledCount == 0 %}
+                <form action="/admin/deleteParkingLot/{{ lot.id }}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
         {% endfor %}
-        </ul>
-    {% endfor %}
+    </table>
+    <button onclick="location.href='/admin'">Back to Dashboard</button>
   </body>
 </html>

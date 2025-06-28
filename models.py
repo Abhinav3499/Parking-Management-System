@@ -7,14 +7,23 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     name = db.Column(db.String(120), nullable=False)
+    address = db.Column(db.String(200), nullable=True)
+    pincode = db.Column(db.String(20), nullable=True)
     admin = db.Column(db.Boolean, default=False)
 
-class Location(db.Model):
+class ParkingLot(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
+    location = db.Column(db.String(120), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     pin = db.Column(db.Integer, nullable=False)
-    parking_lots = db.relationship('ParkingLot', backref='location', lazy=True)
+    total_spots = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    status = db.relationship(
+        'ParkingStatus',
+        backref='parking_lot',
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 class ParkingRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,18 +31,15 @@ class ParkingRecord(db.Model):
     vehicle_number = db.Column(db.String(20), nullable=False)
     parking_time = db.Column(db.DateTime, nullable=False)
     exit_time = db.Column(db.DateTime, nullable=True)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
+    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=True)
+    price_at_booking = db.Column(db.Float, nullable=False)
+    lot_location = db.Column(db.String(120), nullable=False)
+    lot_address = db.Column(db.String(200), nullable=False)
+    lot_pin = db.Column(db.String(20), nullable=False)
 
     user = db.relationship('User', backref=db.backref('parking_history', lazy=True))
-    location = db.relationship('Location', backref=db.backref('parking_records', lazy=True))
-
-class ParkingLot(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=False)
-    total_spots = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
+    lot = db.relationship('ParkingLot', backref=db.backref('parking_records', lazy=True))
 
 class ParkingStatus(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), primary_key=True)
     filledCount = db.Column(db.Integer, nullable=False)
-    parking_lot = db.relationship('ParkingLot', backref=db.backref('status', uselist=False))

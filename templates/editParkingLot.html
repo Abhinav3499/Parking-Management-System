@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Parking Lot</title>
+</head>
+<body>
+    <h1>Edit Parking Lot</h1>
+    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
+    <form action="" method="POST">
+        <p>Location: {{ lot.location }}</p>
+        <p>Address: {{ lot.address }}</p>
+        <p>Pin: {{ lot.pin }}</p>
+        <label for="spots">Number of Spots:</label>
+        <input type="number" id="spots" name="spots" value="{{ lot.total_spots }}" required><br>
+        <label for="price">Price per Hour:</label>
+        <input type="number" step="0.01" id="price" name="price" value="{{ lot.price }}" required><br>
+        <input type="submit" value="Update">
+    </form>
+    <button onclick="location.href='/admin/viewParkingLots'">Back</button>
+</body>
+</html> 

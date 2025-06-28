@@ -2,35 +2,55 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book</title>
+    <title>Book a Parking Spot</title>
 </head>
 <body>
     <h1>Book a Parking Spot</h1>
     <form action="/user/book" method="POST">
-        <label for="location_id">Select Location:</label>
-        <select id="location_id" name="location_id" required>
-            {% for location in locations %}
-                <option value="{{ location.id }}">{{ location.name }} ({{ location.address }}, {{ location.pin }})</option>
+        <label for="location">Select Location:</label>
+        <select id="location" name="location" required>
+            <option value="">Choose a location...</option>
+            {% for loc in locations %}
+                <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Search Parking Lots">
     </form>
     <br>
     {% if parking_lots %}
-        <h2>Available Parking Lots</h2>
-        <ul>
-        {% for lot in parking_lots %}
-            <li>
-                Lot ID: {{ lot.id }}, Total Spots: {{ lot.total_spots }}, Price: {{ lot.price }}
-                <form action="/user/book/confirm" method="POST" style="display:inline;">
-                    <input type="hidden" name="lot_id" value="{{ lot.id }}">
-                    <input type="text" name="vehicle_number" placeholder="Vehicle Number" required>
-                    <button type="submit">Book</button>
-                </form>
-            </li>
-        {% endfor %}
-        </ul>
+        <h2>Available Parking Lots at {{ selected_location }}</h2>
+        <table border="1">
+            <tr>
+                <th>Address</th>
+                <th>Pin</th>
+                <th>Spots</th>
+                <th>Price/Hour</th>
+                <th>Occupied</th>
+                <th>Action</th>
+            </tr>
+            {% for lot in parking_lots %}
+            <tr>
+                <td>{{ lot.address }}</td>
+                <td>{{ lot.pin }}</td>
+                <td>{{ lot.total_spots }}</td>
+                <td>{{ lot.price }}</td>
+                <td>{{ lot.status.filledCount if lot.status else 0 }}</td>
+                <td>
+                    {% if lot.status and lot.status.filledCount < lot.total_spots %}
+                    <form action="/user/book/confirm" method="POST">
+                        <input type="hidden" name="lot_id" value="{{ lot.id }}">
+                        <input type="text" name="vehicle_number" placeholder="Vehicle Number" required>
+                        <button type="submit">Book</button>
+                    </form>
+                    {% else %}Full{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     {% endif %}
+    <button onclick="location.href='/user'">Back to Dashboard</button>
+    <form action="/logout" method="get" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>

@@ -5,12 +5,14 @@
     <title>Admin Dashboard</title>
 </head>
 <body>
-    <h1>Hello, Admin! Welcome to the Admin Dashboard.</h1>
+    <h1>Admin Dashboard</h1>
     <button onclick="location.href='/admin/addParkingLot'">Add Parking Lot</button>
-    <button onclick="location.href='/admin/viewParkingLots'">View Parking Lots</button>
-    <form action="/logout" method="get">
+    <button onclick="location.href='/admin/viewParkingLots'">View/Edit/Delete Parking Lots</button>
+    <button onclick="location.href='/admin/users'">Users</button>
+    <button onclick="location.href='/edit_profile'">Edit Profile</button>
+    <button onclick="location.href='/admin/search'">Search</button>
+    <form action="/logout" method="get" style="display:inline;">
         <button type="submit">Logout</button>
     </form>
-    
 </body>
 </html>

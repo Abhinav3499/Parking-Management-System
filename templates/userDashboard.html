@@ -2,42 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>User Dashboard</title>
 </head>
 <body>
-    <h1>Welcome to the Parking Management System</h1>
-    <h2>User Dashboard</h2>
+    <h1>User Dashboard</h1>
     <button onclick="location.href='/user/book'">Book</button>
-    <button onclick="location.href='/user/history'">View History</button>
-    <form action="/logout" method="get">
+    <button onclick="location.href='/user/history'">Booking History</button>
+    <button onclick="location.href='/user/summary'">Summary</button>
+    <button onclick="location.href='/edit_profile'">Edit Profile</button>
+    <form action="/logout" method="get" style="display:inline;">
         <button type="submit">Logout</button>
     </form>
-    <h3>Recent Booking History</h3>
-    <table border="1">
-        <tr>
-            <th>Lot</th>
-            <th>Location</th>
-            <th>Vehicle</th>
-            <th>Parking Time</th>
-            <th>Exit Time</th>
-            <th>Action</th>
-        </tr>
-        {% for record in parking_history[:5] %}
-        <tr>
-            <td>{{ record.location.parking_lots[0].id if record.location.parking_lots else 'N/A' }}</td>
-            <td>{{ record.location.name }}</td>
-            <td>{{ record.vehicle_number }}</td>
-            <td>{{ record.parking_time }}</td>
-            <td>{{ record.exit_time if record.exit_time else 'Active' }}</td>
-            <td>
-                {% if not record.exit_time %}
-                <form action="/user/exit/{{ record.id }}" method="POST">
-                    <button type="submit">Exit</button>
-                </form>
-                {% else %}Exited{% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </body>
 </html>
