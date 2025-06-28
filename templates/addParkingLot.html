@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Parking Spot</title>
+</head>
+<body>
+    <h1>Add a New Parking Spot</h1>
+    <form action="/admin/addParkingLot" method="POST">
+        <label for="location_name">Location Name:</label>
+        <input type="text" id="location_name" name="location_name" required>
+        <br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required>
+        <br>
+        <label for="spot">Maximum Spot Availability:</label>
+        <input type="number" id="spot" name="spot" required>
+        <br>
+        <input type="submit" value="Add Parking Spot">
+    </form>
+</body>
+</html>
