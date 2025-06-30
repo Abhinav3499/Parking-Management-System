@@ -1,32 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div class="container center">
-        <div class="card" style="max-width: 400px; margin: 60px auto;">
-            <h2 class="center">User Login</h2>
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="error">
-                        {% for message in messages %}
-                            <div>{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            {% endwith %}
-            <form action="{{ url_for('auth.login') }}" method="post">
-                <label for="username">Registered Email:</label><br>
-                <input type="text" id="username" name="username" required><br>
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password" required><br>
-                <input type="submit" value="Login" class="btn">
-            </form>
-            <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Create Account</a></p>
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">User Login</h2>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form action="{{ url_for('auth.login') }}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Email Address</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('auth.register') }}">Create Account</a></p>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

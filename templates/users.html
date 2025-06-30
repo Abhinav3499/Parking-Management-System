@@ -1,33 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registered Users</title>
-</head>
-<body>
-    <h1>Registered Users</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Address</th>
-            <th>Pincode</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.address }}</td>
-            <td>{{ user.pincode }}</td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="5">No users found.</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
-</body>
-</html> 
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.users') }}">Users</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Registered Users</h2>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email (Username)</th>
+                    <th>Full Name</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>{{ user.pincode }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No registered users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

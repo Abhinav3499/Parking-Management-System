@@ -1,29 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Spot Booking Details</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #fff; }
-        .container { max-width: 500px; margin: 40px auto; border: 2px solid #2366b8; border-radius: 16px; padding: 30px; background: #f8fbff; box-shadow: 2px 2px 8px #eee; }
-        h2 { color: #2366b8; }
-        .label { font-weight: bold; color: #333; }
-        .value { color: #2366b8; }
-        .back-btn { margin-top: 20px; display: inline-block; background: #eaf6ff; color: #e67e22; border: 2px solid #e67e22; border-radius: 8px; font-size: 1em; padding: 8px 24px; cursor: pointer; font-weight: bold; text-decoration: none; }
-        .back-btn:hover { background: #fffbe6; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Spot #{{ spot.spot_number }} Booking Details</h2>
-        {% if record %}
-            <p><span class="label">User:</span> <span class="value">{{ record.user.name }} ({{ record.user.username }})</span></p>
-            <p><span class="label">Car Number:</span> <span class="value">{{ record.vehicle_number }}</span></p>
-            <p><span class="label">Booking Time:</span> <span class="value">{{ record.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</span></p>
-        {% else %}
-            <p>No active booking found for this spot.</p>
-        {% endif %}
-        <a href="{{ url_for('admin.dashboard') }}" class="back-btn">Back to Dashboard</a>
+{% extends "base.html" %}
+{% block title %}Spot Details{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</body>
-</html> 
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h2>Details for Spot #{{ record.spot.spot_number }} at {{ record.lot_location }}</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>User:</strong> {{ record.user.name }}</li>
+                    <li class="list-group-item"><strong>Vehicle Number:</strong> {{ record.vehicle_number }}</li>
+                    <li class="list-group-item"><strong>Parking Time:</strong> {{ record.parking_time.strftime('%Y-%m-%d %H:%M') }}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

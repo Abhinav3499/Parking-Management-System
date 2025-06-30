@@ -1,28 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Release Parking Spot</title>
-</head>
-<body>
-    <h1>Release Parking Spot</h1>
-    <table border="1">
-        <tr><th>Location</th><td>{{ lot.location }}</td></tr>
-        <tr><th>Address</th><td>{{ lot.address }}</td></tr>
-        <tr><th>Pin</th><td>{{ lot.pin }}</td></tr>
-        <tr><th>Vehicle Number</th><td>{{ record.vehicle_number }}</td></tr>
-        <tr><th>Parking Time</th><td>{{ record.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</td></tr>
-        <tr><th>Current Time</th><td>{{ now.strftime('%Y-%m-%d %H:%M:%S') }}</td></tr>
-        <tr><th>Hours (Ceil)</th><td>{{ hours }}</td></tr>
-        <tr><th>Price per Hour</th><td>{{ lot.price }}</td></tr>
-        <tr><th>Total Amount</th><td>{{ total_amount }}</td></tr>
-    </table>
-    <p>Total Hours (rounded up): {{ hours }}</p>
-    <p>Total Amount Due: ${{ "%.2f"|format(total_amount) }}</p>
+{% extends "base.html" %}
+{% block title %}Confirm Exit{% endblock %}
 
-    <form action="{{ url_for('user.exit_parking', record_id=record.id) }}" method="post">
-        <button type="submit">Confirm Exit & Pay</button>
-    </form>
-    <a href="{{ url_for('user.history') }}">Back</a>
-</body>
-</html> 
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">Parking App</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2>Confirm Exit & Payment</h2>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Location:</strong> {{ record.lot_location }}</li>
+                    <li class="list-group-item"><strong>Vehicle:</strong> {{ record.vehicle_number }}</li>
+                    <li class="list-group-item"><strong>Entry Time:</strong> {{ record.parking_time.strftime('%Y-%m-%d %H:%M') }}</li>
+                    <li class="list-group-item"><strong>Total Hours (Rounded Up):</strong> {{ hours }}</li>
+                    <li class="list-group-item"><strong>Total Amount Due:</strong> ${{ "%.2f"|format(total_amount) }}</li>
+                </ul>
+                <form action="{{ url_for('user.exit_parking', record_id=record.id) }}" method="post" class="mt-3">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Confirm and Pay</button>
+                        <a href="{{ url_for('user.history') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,18 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Dashboard</title>
-</head>
-<body>
-    <h2>User Dashboard</h2>
-    <p>Welcome, {{ username }}!</p>
-    <ul>
-        <li><a href="{{ url_for('user.book_parking') }}">Book a Parking Spot</a></li>
-        <li><a href="{{ url_for('user.history') }}">View Parking History</a></li>
-        <li><a href="{{ url_for('user.summary') }}">View Summary</a></li>
-        <li><a href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
-    </ul>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">Parking App</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Welcome, {{ session.username }}</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.history') }}">View History</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Ready to Park?</h1>
+        <p class="col-md-8 fs-4">Find and book your parking spot with ease.</p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('user.book') }}" role="button">Book a Spot</a>
+    </div>
+</div>
+{% endblock %}

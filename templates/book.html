@@ -1,46 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Book a Parking Spot</title>
-</head>
-<body>
-    <h2>Book Parking</h2>
-    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
+{% extends "base.html" %}
+{% block title %}Book Parking{% endblock %}
 
-    <form action="{{ url_for('user.book_parking') }}" method="post">
-        <label for="location">Choose a Location:</label>
-        <select id="location" name="location" required>
-            <option value="">Choose a location...</option>
-            {% for loc in locations %}
-                <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
-            {% endfor %}
-        </select>
-        <input type="submit" value="Search Parking Lots">
-    </form>
-    <br>
-    {% if parking_lots %}
-        <h3>Available Lots at {{ selected_location }}</h3>
-        <ul>
-            {% for lot in parking_lots %}
-                <li>
-                    {{ lot.address }} (PIN: {{ lot.pin }}) - 
-                    Spots Left: {{ lot.total_spots - (lot.status.filledCount if lot.status else 0) }} - 
-                    Price: ${{ "%.2f"|format(lot.price) }}/hr
-                    {% if lot.total_spots - (lot.status.filledCount if lot.status else 0) > 0 %}
-                        <form action="{{ url_for('user.confirm_booking') }}" method="post" style="display:inline;">
-                            <input type="hidden" name="lot_id" value="{{ lot.id }}">
-                            <label for="vehicle_number_{{ lot.id }}">Vehicle Number:</label>
-                            <input type="text" id="vehicle_number_{{ lot.id }}" name="vehicle_number" required>
-                            <button type="submit">Book</button>
-                        </form>
-                    {% else %}
-                        <span>Full</span>
-                    {% endif %}
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">Parking App</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
                 </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header">
+        Search for Parking
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('user.book') }}" method="get">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="location" class="form-control" placeholder="Search by Location..." value="{{ request.args.get('location', '') }}">
+                </div>
+                <div class="col-md-5">
+                    <input type="text" name="pin" class="form-control" placeholder="Search by PIN Code..." value="{{ request.args.get('pin', '') }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if lots is not none %}
+<div class="card">
+    <div class="card-header">
+        Available Lots
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Address</th>
+                    <th>Available Spots</th>
+                    <th>Price/Hour</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lot in lots %}
+                {% set available_spots = lot.spots|selectattr('status', 'equalto', 'A')|list|length %}
+                {% if available_spots > 0 %}
+                <tr>
+                    <td>{{ lot.location }}</td>
+                    <td>{{ lot.address }}, {{ lot.pin }}</td>
+                    <td>{{ available_spots }} / {{ lot.total_spots }}</td>
+                    <td>${{ "%.2f"|format(lot.price) }}</td>
+                    <td>
+                        <form action="{{ url_for('user.book') }}" method="post">
+                            <input type="hidden" name="lot_id" value="{{ lot.id }}">
+                            <div class="input-group">
+                                <input type="text" name="vehicle_number" class="form-control" placeholder="Car Plate No." required>
+                                <button type="submit" class="btn btn-success">Book</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endif %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No parking lots found. Start a search to see results.</td>
+                </tr>
             {% endfor %}
-        </ul>
-    {% endif %}
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-</body>
-</html>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

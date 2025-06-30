@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Admin Summary{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Users</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.summary') }}">Summary</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">System-Wide Statistics</h2>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-primary mb-3">
+            <div class="card-header">Total Lots</div>
+            <div class="card-body">
+                <h1 class="card-title">{{ stats.total_lots }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-info mb-3">
+            <div class="card-header">Total Spots</div>
+            <div class="card-body">
+                <h1 class="card-title">{{ stats.total_spots }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-danger mb-3">
+            <div class="card-header">Occupied Spots</div>
+            <div class="card-body">
+                <h1 class="card-title">{{ stats.occupied_spots }}</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-success mb-3">
+            <div class="card-header">Available Spots</div>
+            <div class="card-body">
+                <h1 class="card-title">{{ stats.available_spots }}</h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from models import db, User, ParkingLot, ParkingStatus, ParkingRecord, ParkingSpot
+from models import db, User, ParkingLot, ParkingRecord, ParkingSpot
 from datetime import datetime
 from math import ceil
 from functools import wraps
@@ -22,97 +22,91 @@ def dashboard():
 
 @user_bp.route('/book', methods=['GET', 'POST'])
 @user_required
-def book_parking():
-    locations = [lot.location for lot in ParkingLot.query.all()]
-    unique_locations = sorted(list(set(locations)))
-    parking_lots = None
-    selected_location = None
+def book():
     if request.method == 'POST':
-        selected_location = request.form.get('location')
-        if selected_location:
-            parking_lots = ParkingLot.query.filter_by(location=selected_location).all()
-            for lot in parking_lots:
-                if not lot.status:
-                    status = ParkingStatus(id=lot.id, filledCount=0)
-                    db.session.add(status)
-            db.session.commit()
-    return render_template('book.html', locations=unique_locations, parking_lots=parking_lots, selected_location=selected_location)
+        lot_id = request.form.get('lot_id')
+        vehicle_number = request.form.get('vehicle_number')
+        user_id = session['user_id']
+        
+        if not lot_id or not vehicle_number:
+            return "Missing required information!", 400
 
-@user_bp.route('/book/confirm', methods=['POST'])
-@user_required
-def confirm_booking():
-    lot_id = request.form.get('lot_id')
-    vehicle_number = request.form.get('vehicle_number')
-    user_id = session['user_id']
-    if not lot_id or not vehicle_number: return "Missing required information!", 400
-    lot = ParkingLot.query.get(lot_id)
-    if not lot: return "Parking lot not found!", 404
-    if not lot.status:
-        status = ParkingStatus(id=lot.id, filledCount=0)
-        db.session.add(status)
-        db.session.commit()
         lot = ParkingLot.query.get(lot_id)
-    # Find first available spot
-    available_spot = ParkingSpot.query.filter_by(lot_id=lot.id, status='A').order_by(ParkingSpot.spot_number).first()
-    if not available_spot:
-        return "No spots available!", 400
-    # Mark spot as occupied
-    available_spot.status = 'O'
-    db.session.commit()
-    record = ParkingRecord(
-        user_id=user_id, vehicle_number=vehicle_number, parking_time=datetime.now(), exit_time=None,
-        lot_id=lot.id, price_at_booking=lot.price, lot_location=lot.location, lot_address=lot.address, lot_pin=str(lot.pin),
-        spot_id=available_spot.id
-    )
-    db.session.add(record)
-    lot.status.filledCount += 1
-    db.session.commit()
-    return redirect(url_for('user.dashboard'))
+        if not lot: return "Parking lot not found!", 404
+
+        available_spot = ParkingSpot.query.filter_by(lot_id=lot.id, status='A').order_by(ParkingSpot.spot_number).first()
+        if not available_spot: return "No spots available!", 400
+
+        available_spot.status = 'O'
+        
+        record = ParkingRecord(
+            user_id=user_id, vehicle_number=vehicle_number, parking_time=datetime.now(),
+            lot_id=lot.id, price_at_booking=lot.price, lot_location=lot.location, 
+            lot_address=lot.address, lot_pin=str(lot.pin), spot_id=available_spot.id
+        )
+        db.session.add(record)
+        db.session.commit()
+        
+        return redirect(url_for('user.booking_summary', record_id=record.id))
+
+    search_location = request.args.get('location', '')
+    search_pin = request.args.get('pin', '')
+    query = ParkingLot.query
+    if search_location: query = query.filter(ParkingLot.location.ilike(f'%{search_location}%'))
+    if search_pin: query = query.filter(ParkingLot.pin.ilike(f'%{search_pin}%'))
+    lots = query.all()
+    
+    return render_template('book.html', lots=lots, search_location=search_location, search_pin=search_pin)
+
+@user_bp.route('/summary/<int:record_id>')
+@user_required
+def booking_summary(record_id):
+    record = ParkingRecord.query.get_or_404(record_id)
+    if record.user_id != session['user_id']: return "Unauthorized", 403
+    return render_template('summary.html', record=record)
 
 @user_bp.route('/exit/<int:record_id>', methods=['GET', 'POST'])
 @user_required
 def exit_parking(record_id):
-    record = ParkingRecord.query.get(record_id)
-    if not record or record.user_id != session['user_id']: return "Invalid operation!", 400
-    lot = ParkingLot.query.get(record.lot_id)
-    spot = ParkingSpot.query.get(record.spot_id) if record.spot_id else None
+    record = ParkingRecord.query.get_or_404(record_id)
+    if record.user_id != session['user_id']: return "Unauthorized", 403
+
     if request.method == 'POST':
         if record.exit_time is not None: return "Already exited!", 400
         record.exit_time = datetime.now()
-        if spot:
-            spot.status = 'A'
-        if lot and lot.status and lot.status.filledCount > 0:
-            lot.status.filledCount -= 1
+        if record.spot:
+            record.spot.status = 'A'
         db.session.commit()
         return redirect(url_for('user.history'))
+
     end_time = datetime.now()
-    start_time = record.parking_time
-    hours = ceil((end_time - start_time).total_seconds() / 3600)
+    hours = ceil((end_time - record.parking_time).total_seconds() / 3600)
     total_amount = hours * record.price_at_booking
-    now = end_time
-    return render_template('exit.html', record=record, lot=lot, hours=hours, total_amount=total_amount, now=now)
+    
+    return render_template('exit.html', record=record, hours=hours, total_amount=total_amount)
 
 @user_bp.route('/history')
 @user_required
 def history():
     user = User.query.get(session['user_id'])
-    return render_template('history.html', parking_history=user.parking_history)
+    return render_template('history.html', history=user.parking_history)
 
-@user_bp.route('/summary')
+@user_bp.route('/stats')
 @user_required
-def summary():
+def stats():
     user = User.query.get(session['user_id'])
-    parking_history = user.parking_history
-    total_bookings = len(parking_history)
-    active_bookings = len([r for r in parking_history if r.exit_time is None])
-    completed_bookings = len([r for r in parking_history if r.exit_time is not None])
+    history = user.parking_history
+    total_bookings = len(history)
+    active_bookings = len([r for r in history if r.exit_time is None])
+    completed_bookings = total_bookings - active_bookings
+    
     location_counts = {}
-    for record in parking_history:
-        location_name = record.lot.location
-        location_counts[location_name] = location_counts.get(location_name, 0) + 1
-    most_visited_location = max(location_counts.items(), key=lambda x: x[1])[0] if location_counts else None
-    return render_template('summary.html',
-                         total_bookings=total_bookings,
+    for record in history:
+        if record.lot:
+            location_counts[record.lot_location] = location_counts.get(record.lot_location, 0) + 1
+    most_visited = max(location_counts, key=location_counts.get) if location_counts else 'N/A'
+
+    return render_template('stats.html', total_bookings=total_bookings,
                          active_bookings=active_bookings,
                          completed_bookings=completed_bookings,
-                         most_visited_location=most_visited_location) 
+                         most_visited_location=most_visited) 

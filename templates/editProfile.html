@@ -1,33 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Profile</title>
-</head>
-<body>
-    <h2>Edit Profile</h2>
-    {% if error %}
-        <p style="color:red;">{{ error }}</p>
-    {% endif %}
-    <form action="{{ url_for('auth.edit_profile') }}" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ user.name }}" required><br><br>
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address" value="{{ user.address }}" required><br>
-        <label for="pincode">Pincode:</label>
-        <input type="number" id="pincode" name="pincode" value="{{ user.pincode }}" required><br>
-        <hr>
-        <label for="old_password">Old Password:</label>
-        <input type="password" id="old_password" name="old_password"><br>
-        <label for="new_password">New Password (leave blank to keep current):</label>
-        <input type="password" id="new_password" name="new_password"><br>
-        <small>Leave password fields blank if you do not want to change your password.</small><br>
-        <button type="submit">Update Profile</button>
-    </form>
-    {% if session.admin %}
-    <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
-    {% else %}
-    <a href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
-    {% endif %}
-</body>
-</html> 
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') if not session.get('is_admin') else url_for('admin.dashboard') }}">Dashboard</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-6 col-lg-5 col-xl-4">
+        <div class="card shadow">
+            <div class="card-header text-center bg-light">
+                <h2 class="mb-0">Edit Your Profile</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('auth.edit_profile') }}" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" id="address" name="address" class="form-control" value="{{ user.address }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pincode" class="form-label">Pincode</label>
+                        <input type="text" id="pincode" name="pincode" class="form-control" value="{{ user.pincode }}">
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
