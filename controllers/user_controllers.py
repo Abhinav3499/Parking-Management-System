@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from models import db, User, ParkingLot, ParkingStatus, ParkingRecord
+from models import db, User, ParkingLot, ParkingStatus, ParkingRecord, ParkingSpot
 from datetime import datetime
 from math import ceil
 from functools import wraps
@@ -52,10 +52,17 @@ def confirm_booking():
         db.session.add(status)
         db.session.commit()
         lot = ParkingLot.query.get(lot_id)
-    if lot.status.filledCount >= lot.total_spots: return "No spots available!", 400
+    # Find first available spot
+    available_spot = ParkingSpot.query.filter_by(lot_id=lot.id, status='A').order_by(ParkingSpot.spot_number).first()
+    if not available_spot:
+        return "No spots available!", 400
+    # Mark spot as occupied
+    available_spot.status = 'O'
+    db.session.commit()
     record = ParkingRecord(
         user_id=user_id, vehicle_number=vehicle_number, parking_time=datetime.now(), exit_time=None,
-        lot_id=lot.id, price_at_booking=lot.price, lot_location=lot.location, lot_address=lot.address, lot_pin=str(lot.pin)
+        lot_id=lot.id, price_at_booking=lot.price, lot_location=lot.location, lot_address=lot.address, lot_pin=str(lot.pin),
+        spot_id=available_spot.id
     )
     db.session.add(record)
     lot.status.filledCount += 1
@@ -68,9 +75,12 @@ def exit_parking(record_id):
     record = ParkingRecord.query.get(record_id)
     if not record or record.user_id != session['user_id']: return "Invalid operation!", 400
     lot = ParkingLot.query.get(record.lot_id)
+    spot = ParkingSpot.query.get(record.spot_id) if record.spot_id else None
     if request.method == 'POST':
         if record.exit_time is not None: return "Already exited!", 400
         record.exit_time = datetime.now()
+        if spot:
+            spot.status = 'A'
         if lot and lot.status and lot.status.filledCount > 0:
             lot.status.filledCount -= 1
         db.session.commit()

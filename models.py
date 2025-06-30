@@ -36,10 +36,20 @@ class ParkingRecord(db.Model):
     lot_location = db.Column(db.String(120), nullable=False)
     lot_address = db.Column(db.String(200), nullable=False)
     lot_pin = db.Column(db.String(20), nullable=False)
+    spot_id = db.Column(db.Integer, db.ForeignKey('parking_spot.id'), nullable=True)
 
     user = db.relationship('User', backref=db.backref('parking_history', lazy=True))
     lot = db.relationship('ParkingLot', backref=db.backref('parking_records', lazy=True))
+    spot = db.relationship('ParkingSpot', backref=db.backref('parking_records', lazy=True))
 
 class ParkingStatus(db.Model):
     id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), primary_key=True)
     filledCount = db.Column(db.Integer, nullable=False)
+
+class ParkingSpot(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=False)
+    spot_number = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.String(1), nullable=False, default='A')  # 'A' for available, 'O' for occupied
+
+    lot = db.relationship('ParkingLot', backref=db.backref('spots', cascade='all, delete-orphan', lazy=True))

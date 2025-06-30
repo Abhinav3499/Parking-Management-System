@@ -1,18 +1,179 @@
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8fbff;
     margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
+    padding: 0;
+    color: #222;
 }
 
-.container {
+.navbar, .topbar {
+    background: #c8efc8;
+    padding: 12px 24px;
+    border-radius: 0 0 16px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.navbar .left, .topbar .left {
+    color: #d44;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.navbar .center a, .topbar .center a {
+    color: #222;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 1.1em;
+}
+.navbar .center a:hover, .topbar .center a:hover {
+    text-decoration: underline;
+}
+.navbar .right a, .topbar .right a {
+    color: #1a7fc1;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.container, .lots-container {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: white;
+    padding: 24px;
+}
+.card, .lot-box {
+    border: 2px solid #2366b8;
+    border-radius: 20px;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #fff;
+    box-shadow: 2px 2px 8px #eee;
+    margin-bottom: 24px;
+}
+.lots-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: flex-start;
+}
+.lot-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.lot-actions a, .lot-actions form {
+    display: inline;
+}
+.lot-actions a {
+    color: #e67e22;
+    margin-right: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.lot-actions a:hover {
+    text-decoration: underline;
+}
+.lot-actions button {
+    color: #e74c3c;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+.occupied {
+    color: #1abc9c;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.spots-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 32px);
+    gap: 7px;
+    margin-bottom: 10px;
+}
+.spot-btn-form {
+    display: inline;
+}
+.spot-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    border: 2px solid #2366b8;
+    font-size: 1.1em;
+    font-weight: bold;
+    background: #eaf6ff;
+    color: #2366b8;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+.spot-btn.occupied {
+    background: #ffd6d6;
+    color: #e74c3c;
+    border-color: #e74c3c;
+}
+.add-lot-btn, .back-btn, .btn, button, input[type="submit"] {
+    background: #eaf6ff;
+    color: #e67e22;
+    border: 2px solid #e67e22;
+    border-radius: 10px;
+    font-size: 1.1em;
+    padding: 10px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 1px 1px 6px #eee;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.add-lot-btn:hover, .back-btn:hover, .btn:hover, button:hover, input[type="submit"]:hover {
+    background: #fffbe6;
+}
+input, select, textarea {
+    border: 1.5px solid #2366b8;
+    border-radius: 7px;
+    padding: 7px 10px;
+    margin-bottom: 10px;
+    font-size: 1em;
+    background: #f8fbff;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #1a7fc1;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+th, td {
+    border: 1px solid #c8efc8;
+    padding: 10px 8px;
+    text-align: left;
+}
+th {
+    background: #eaf6ff;
+    color: #2366b8;
+}
+tr:nth-child(even) {
+    background: #f8fbff;
+}
+tr:hover {
+    background: #f1f7fa;
+}
+.error, .message {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.success {
+    color: #1abc9c;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.center {
+    text-align: center;
 }
 
 /* Header Buttons */

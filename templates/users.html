@@ -22,11 +22,12 @@
             <td>{{ user.address }}</td>
             <td>{{ user.pincode }}</td>
         </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">No users found.</td>
+        </tr>
         {% endfor %}
     </table>
-    {% else %}
-        <p>No users found.</p>
-    {% endif %}
     <a href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
 </body>
 </html> 
