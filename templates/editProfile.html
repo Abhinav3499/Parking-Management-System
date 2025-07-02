@@ -4,7 +4,7 @@
 {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('user.dashboard') if not session.get('is_admin') else url_for('admin.dashboard') }}">Dashboard</a>
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') if not session.get('admin') else url_for('admin.dashboard') }}">Dashboard</a>
     </div>
 </nav>
 {% endblock %}
