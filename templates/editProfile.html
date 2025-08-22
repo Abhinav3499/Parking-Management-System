@@ -1,41 +1,163 @@
-{% extends "base.html" %}
-{% block title %}Edit Profile{% endblock %}
-
-{% block navbar %}
+{% extends "base.html" %} {% block title %}Edit Profile{% endblock %} {% block
+extra_head %}
+<style>
+  .navbar .btn,
+  .navbar .btn-outline-light,
+  .navbar .btn-danger {
+    font-family: "Lobster Two", cursive !important;
+    font-weight: 700 !important;
+  }
+</style>
+{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('user.dashboard') if not session.get('admin') else url_for('admin.dashboard') }}">Dashboard</a>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}"
+      >Admin Panel</a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#adminNavbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="adminNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.dashboard') }}"
+            >Dashboard</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.manageUsers') }}"
+            >Users</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.search') }}">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <span class="navbar-text me-3"
+          >Welcome, {{ session.username or 'Admin' }}</span
+        >
+        <a
+          href="{{ url_for('admin.editProfile') }}"
+          class="btn btn-outline-light btn-sm me-2"
+          >Edit Profile</a
+        >
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm"
+          >Logout</a
+        >
+      </div>
     </div>
+  </div>
 </nav>
-{% endblock %}
-
-{% block content %}
-<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-6 col-lg-5 col-xl-4">
-        <div class="card shadow">
-            <div class="card-header text-center bg-light">
-                <h2 class="mb-0">Edit Your Profile</h2>
-            </div>
-            <div class="card-body">
-                <form action="{{ url_for('auth.edit_profile') }}" method="post">
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" id="name" name="name" class="form-control" value="{{ user.name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" id="address" name="address" class="form-control" value="{{ user.address }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="pincode" class="form-label">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" class="form-control" value="{{ user.pincode }}">
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Update Profile</button>
-                    </div>
-                </form>
-            </div>
+{% endblock %} {% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">Edit Profile</h3>
         </div>
+        <div class="card-body">
+          {% with messages = get_flashed_messages(with_categories=true) %} {% if
+          messages %} {% for category, message in messages %}
+          <div
+            class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+          {% endfor %} {% endif %} {% endwith %}
+
+          <form action="{{ url_for('admin.editProfile') }}" method="post">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                value="{{ user.username }}"
+                disabled
+              />
+              <small class="form-text text-muted"
+                >Username cannot be changed</small
+              >
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="name"
+                name="name"
+                value="{{ user.name }}"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                value="{{ user.address.address }}"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="pincode" class="form-label">Pin Code</label>
+              <input
+                type="text"
+                class="form-control"
+                id="pincode"
+                name="pincode"
+                value="{{ user.address.pincode }}"
+                required
+                pattern="[0-9]{6}"
+                title="Pincode must be 6 digits"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="new_password" class="form-label">New Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="new_password"
+                name="new_password"
+                minlength="8"
+              />
+              <small class="form-text text-muted"
+                >Leave blank to keep current password (minimum 8 characters if
+                changing)</small
+              >
+            </div>
+            <div class="d-flex justify-content-end gap-2">
+              <a
+                href="{{ url_for('admin.dashboard') }}"
+                class="btn btn-secondary"
+                >Cancel</a
+              >
+              <button type="submit" class="btn btn-primary">
+                Update Profile
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %} 
+{% endblock %}

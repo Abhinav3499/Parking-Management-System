@@ -1,36 +1,39 @@
 {% extends "base.html" %}
+
 {% block title %}Spot Details{% endblock %}
 
-{% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Back to Dashboard</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-{% endblock %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h2>Details for Spot #{{ record.spot.spot_number }} at {{ record.lot_location }}</h2>
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><strong>User:</strong> {{ record.user.name }}</li>
-                    <li class="list-group-item"><strong>Vehicle Number:</strong> {{ record.vehicle_number }}</li>
-                    <li class="list-group-item"><strong>Parking Time:</strong> {{ record.parking_time.strftime('%Y-%m-%d %H:%M') }}</li>
-                </ul>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Spot #{{ spot.spotNumber }} Details</h2>
+                    <div class="mb-3">
+                        <strong>Lot Location:</strong> {{ spot.parkingLot.location }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Status:</strong> 
+                        <span class="badge {{ 'bg-success' if spot.status == 'A' else 'bg-danger' }}">
+                            {{ 'Available' if spot.status == 'A' else 'Occupied' }}
+                        </span>
+                    </div>
+                    
+                    {% if record %}
+                    <hr>
+                    <h5>Current Booking:</h5>
+                    <div class="mb-2"><strong>User:</strong> {{ record.user.name }}</div>
+                    <div class="mb-2"><strong>Vehicle Number:</strong> {{ record.vehicleNumber }}</div>
+                    <div class="mb-2"><strong>Entry Time:</strong> {{ record.entryTime.strftime('%Y-%m-%d %H:%M') }}</div>
+                    <div class="mb-2"><strong>Booking Price:</strong> ${{ record.bookingPrice }}</div>
+                    {% endif %}
+                    
+                    <div class="d-grid">
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock %}

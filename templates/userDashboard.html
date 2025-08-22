@@ -8,10 +8,10 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Welcome, {{ session.username }}</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Welcome, {{ user.name }}</a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('user.history') }}">View History</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.record') }}">View History</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.editProfile') }}">Edit Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     </ul>
@@ -23,11 +23,63 @@
 {% endblock %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Ready to Park?</h1>
-        <p class="col-md-8 fs-4">Find and book your parking spot with ease.</p>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('user.book') }}" role="button">Book a Spot</a>
+<div class="container mt-4">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome, {{ user.name }}!</h1>
+            <p class="col-md-8 fs-4">Manage your parking bookings and find new spots.</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('user.book') }}" role="button">Book a New Spot</a>
+        </div>
     </div>
+
+    {% if activeBookings %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Active Bookings</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for booking in activeBookings %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ booking.lotLocation }}</h5>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <p class="card-text">
+                                                <strong>Vehicle:</strong> {{ booking.vehicleNumber }}<br>
+                                                <strong>Spot:</strong> {{ booking.parkingSpot.spotNumber }}<br>
+                                                <strong>Entry Time:</strong> {{ booking.entryTime.strftime('%Y-%m-%d %H:%M') }}<br>
+                                                <strong>Price:</strong> ₹{{ booking.bookingPrice }}/hour<br>
+                                                <strong>Address:</strong> {{ booking.lotAddress }}
+                                            </p>
+                                        </div>
+                                        <div class="col-4 d-flex align-items-center justify-content-end">
+                                            <a href="{{ url_for('user.exit', recordId=booking.id) }}" class="btn btn-danger">
+                                                Exit Parking
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5>No Active Bookings</h5>
+                <p>You don't have any active parking bookings at the moment.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

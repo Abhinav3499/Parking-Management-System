@@ -1,87 +1,94 @@
-{% extends "base.html" %}
-{% block title %}Book Parking{% endblock %}
+{% extends "base.html" %} {% block title %}Book Parking{% endblock %} {% block
+extra_head %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Book Parking Spot</h2>
+    <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+  </div>
 
-{% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">Parking App</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('user.dashboard') }}">Back to Dashboard</a>
-                </li>
-            </ul>
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-3">
+        <div class="col-md-6">
+          <label for="searchLocation" class="form-label">Location</label>
+          <input
+            type="text"
+            class="form-control"
+            id="searchLocation"
+            name="searchLocation"
+            value="{{ searchLocation }}"
+            placeholder="Search by location..."
+          />
         </div>
+        <div class="col-md-6">
+          <label for="searchPin" class="form-label">Pincode</label>
+          <input
+            type="text"
+            class="form-control"
+            id="searchPin"
+            name="searchPin"
+            value="{{ searchPin }}"
+            placeholder="Search by pincode..."
+            pattern="[0-9]{6}"
+            title="Pincode must be 6 digits"
+          />
+        </div>
+        <div class="col-12">
+          <button type="submit" class="btn btn-primary">Search</button>
+          <a href="{{ url_for('user.book') }}" class="btn btn-secondary"
+            >Clear</a
+          >
+        </div>
+      </form>
     </div>
-</nav>
-{% endblock %}
+  </div>
 
-{% block content %}
-<div class="card mb-4">
-    <div class="card-header">
-        Search for Parking
-    </div>
-    <div class="card-body">
-        <form action="{{ url_for('user.book') }}" method="get">
-            <div class="row g-3">
-                <div class="col-md-5">
-                    <input type="text" name="location" class="form-control" placeholder="Search by Location..." value="{{ request.args.get('location', '') }}">
-                </div>
-                <div class="col-md-5">
-                    <input type="text" name="pin" class="form-control" placeholder="Search by PIN Code..." value="{{ request.args.get('pin', '') }}">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+  {% if parkingLots %}
+  <div class="row">
+    {% for lot in parkingLots %}
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{ lot.location }}</h5>
+          <p class="card-text">
+            <strong>Address:</strong> {{ lot.address.address }}<br />
+            <strong>Pincode:</strong> {{ lot.address.pincode }}<br />
+            <strong>Price:</strong> ₹{{ lot.pricePerHour }}/hour<br />
+            <strong>Total Spots:</strong> {{ lot.totalSpots }}
+          </p>
 
-{% if lots is not none %}
-<div class="card">
-    <div class="card-header">
-        Available Lots
+          {% set available_spots = lot.parkingSpots | selectattr('status',
+          'equalto', 'A') | list | length %}
+          <p class="card-text">
+            <strong>Available Spots:</strong> {{ available_spots }}
+          </p>
+
+          {% if available_spots > 0 %}
+          <a
+            href="{{ url_for('user.bookLot', lotId=lot.id) }}"
+            class="btn btn-primary"
+          >
+            Book Now
+          </a>
+          {% else %}
+          <button class="btn btn-secondary" disabled>No Spots Available</button>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    <div class="card-body">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Location</th>
-                    <th>Address</th>
-                    <th>Available Spots</th>
-                    <th>Price/Hour</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for lot in lots %}
-                {% set available_spots = lot.spots|selectattr('status', 'equalto', 'A')|list|length %}
-                {% if available_spots > 0 %}
-                <tr>
-                    <td>{{ lot.location }}</td>
-                    <td>{{ lot.address }}, {{ lot.pin }}</td>
-                    <td>{{ available_spots }} / {{ lot.total_spots }}</td>
-                    <td>${{ "%.2f"|format(lot.price) }}</td>
-                    <td>
-                        <form action="{{ url_for('user.book') }}" method="post">
-                            <input type="hidden" name="lot_id" value="{{ lot.id }}">
-                            <div class="input-group">
-                                <input type="text" name="vehicle_number" class="form-control" placeholder="Car Plate No." required>
-                                <button type="submit" class="btn btn-success">Book</button>
-                            </div>
-                        </form>
-                    </td>
-                </tr>
-                {% endif %}
-            {% else %}
-                <tr>
-                    <td colspan="5" class="text-center">No parking lots found. Start a search to see results.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">
+    No parking lots found matching your search criteria.
+  </div>
+  {% endif %}
 </div>
-{% endif %}
 {% endblock %}

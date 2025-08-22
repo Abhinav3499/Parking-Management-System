@@ -1,42 +1,48 @@
-from flask import Flask, url_for, redirect
-from models import db, User
-from werkzeug.security import generate_password_hash
+from flask import Flask
+from flask_login import LoginManager
+from models.models import db, User, Address
+from controllers.authController import authBp
+from controllers.userController import userBp
+from controllers.adminController import adminBp
 
-def create_app():
+
+def createApp():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///parking.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.secret_key = 'supersecretkey'
+    app.secret_key = 'AbhianvArya'
 
     db.init_app(app)
 
-    from controllers.auth_controllers import auth_bp
-    from controllers.admin_controllers import admin_bp
-    from controllers.user_controllers import user_bp
-    
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(user_bp)
+    loginManager = LoginManager()
+    loginManager.init_app(app)
+    loginManager.login_view = 'auth.login'
 
-    @app.route('/')
-    def index():
-        return redirect(url_for('auth.login'))
+    @loginManager.user_loader
+    def loadUser(userId):
+        return User.query.get(int(userId))
+
+    app.register_blueprint(authBp)
+    app.register_blueprint(userBp)
+    app.register_blueprint(adminBp)
 
     return app
 
 if __name__ == '__main__':
-    app = create_app()
+    app = createApp()
     with app.app_context():
         db.create_all()
-        if not User.query.filter_by(admin=True).first():
-            admin = User(
-                username='admin',
-                password=generate_password_hash('admin'),
-                name='Admin',
-                address='N/A',
-                pincode='000000',
-                admin=True
-            )
-            db.session.add(admin)
+        if not User.query.filter_by(isAdmin=True).first():
+            adminAddress = Address(address='Admin Address', pincode='000000')
+            db.session.add(adminAddress)
             db.session.commit()
-    app.run(debug=True)
+            adminUser = User(
+                username='admin',
+                name='Admin',
+                addressId=adminAddress.id,
+                isAdmin=True
+            )
+            adminUser.setPassword('admin')
+            db.session.add(adminUser)
+            db.session.commit()
+    app.run(debug=True)     

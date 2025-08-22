@@ -1,74 +1,134 @@
-{% extends "base.html" %}
-{% block title %}Search{% endblock %}
-
-{% block navbar %}
+{% extends "base.html" %} {% block title %}Search{% endblock %} {% block
+extra_head %}
+<style>
+  .navbar .btn,
+  .navbar .btn-outline-light,
+  .navbar .btn-danger {
+    font-family: "Lobster Two", cursive !important;
+    font-weight: 700 !important;
+  }
+</style>
+{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Users</a></li>
-                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.search') }}">Search</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a></li>
-            </ul>
-        </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}"
+      >Admin Panel</a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#adminNavbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="adminNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.dashboard') }}"
+            >Dashboard</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.manageUsers') }}"
+            >Users</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('admin.search') }}"
+            >Search</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <span class="navbar-text me-3"
+          >Welcome, {{ session.username or 'Admin' }}</span
+        >
+        <a
+          href="{{ url_for('admin.editProfile') }}"
+          class="btn btn-outline-light btn-sm me-2"
+          >Edit Profile</a
+        >
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm"
+          >Logout</a
+        >
+      </div>
     </div>
+  </div>
 </nav>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="card mb-4">
-    <div class="card-header">
-        Search by Location or PIN
-    </div>
-    <div class="card-body">
-        <form action="{{ url_for('admin.search') }}" method="post">
-            <div class="row g-3 align-items-center">
-                <div class="col-auto">
-                    <label for="location" class="col-form-label">Location</label>
-                </div>
-                <div class="col">
-                    <input type="text" id="location" name="location" class="form-control" placeholder="e.g., Downtown">
-                </div>
-                <div class="col-auto">
-                    <label for="pin" class="col-form-label">PIN Code</label>
-                </div>
-                <div class="col">
-                    <input type="text" id="pin" name="pin" class="form-control" placeholder="e.g., 90210">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-            </div>
-        </form>
-    </div>
+  <div class="card-header">Search by Location or PIN</div>
+  <div class="card-body">
+    <form action="{{ url_for('admin.search') }}" method="post">
+      <div class="row g-3 align-items-center">
+        <div class="col-auto">
+          <label for="location" class="col-form-label">Location</label>
+        </div>
+        <div class="col">
+          <input
+            type="text"
+            id="location"
+            name="location"
+            class="form-control"
+            placeholder="e.g., Downtown"
+          />
+        </div>
+        <div class="col-auto">
+          <label for="pincode" class="col-form-label">PIN Code</label>
+        </div>
+        <div class="col">
+          <input
+            type="text"
+            id="pincode"
+            name="pincode"
+            class="form-control"
+            placeholder="e.g., 90210"
+            pattern="[0-9]{6}"
+            title="Pincode must be 6 digits"
+          />
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 {% if results is not none %}
-    <h3>Search Results</h3>
-    {% if results %}
-    <div class="row g-4">
-        {% for lot in results %}
-        <div class="col-xl-4 col-lg-6">
-            <div class="card shadow-sm h-100 lot-box">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Parking#{{ lot.id }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">(Occupied : {{ lot.spots|selectattr('status', 'equalto', 'O')|list|length }} / {{ lot.spots|length }})</h6>
-                    <hr>
-                    <div class="spots-container">
-                        {% for spot in lot.spots|sort(attribute='spot_number') %}
-                            <a href="{{ url_for('admin.spot_details', spot_id=spot.id) if spot.status == 'O' else '#' }}" 
-                               class="btn spot-btn {{ 'btn-danger' if spot.status == 'O' else 'btn-success' }}" 
-                               title="Spot #{{ spot.spot_number }}">{{ spot.status }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
+<h3>Search Results</h3>
+{% if results %}
+<div class="row g-4">
+  {% for lot in results %}
+  <div class="col-xl-4 col-lg-6">
+    <div class="card shadow-sm h-100 lot-box">
+      <div class="card-body text-center">
+        <h5 class="card-title">{{ lot.location }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+          (Occupied : {{ lot.parkingSpots|selectattr('status', 'equalto',
+          'O')|list|length }} / {{ lot.parkingSpots|length }})
+        </h6>
+        <hr />
+        <div class="spots-container">
+          {% for spot in lot.parkingSpots|sort(attribute='spotNumber') %}
+          <a
+            href="{{ url_for('admin.spotDetails', spotId=spot.id) if spot.status == 'O' else '#' }}"
+            class="btn spot-btn {{ 'btn-danger' if spot.status == 'O' else 'btn-success' }}"
+            title="Spot #{{ spot.spotNumber }}"
+            style="background-color: {{ 'red' if spot.status == 'O' else 'green' }}; border-color: {{ 'red' if spot.status == 'O' else 'green' }};"
+            >{{ spot.status }}</a
+          >
+          {% endfor %}
         </div>
-        {% endfor %}
+      </div>
     </div>
-    {% else %}
-    <div class="alert alert-info">No parking lots found matching your search.</div>
-    {% endif %}
-{% endif %}
-{% endblock %} 
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">No parking lots found matching your search.</div>
+{% endif %} {% endif %} {% endblock %}

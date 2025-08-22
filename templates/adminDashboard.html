@@ -1,75 +1,158 @@
-{% extends "base.html" %}
-
-{% block title %}Admin Dashboard{% endblock %}
-
-{% block navbar %}
+{% extends "base.html" %} {% block title %}Admin Dashboard{% endblock %} {%
+block extra_head %}
+<style>
+  .parking-lot-card {
+    margin-bottom: 1rem;
+  }
+  .parking-status {
+    margin-top: 0.5rem;
+  }
+  
+  .card {
+    box-shadow: 0 4px 24px 0 rgba(44,62,80,0.10), 0 1.5px 4px 0 rgba(44,62,80,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 3px 8px 0 rgba(44,62,80,0.12);
+  }
+  .btn, .btn-primary, .btn-outline-secondary, .btn-outline-danger {
+    transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(44,62,80,0.08);
+  }
+  .btn:hover, .btn:focus {
+    box-shadow: 0 4px 16px 0 rgba(44,62,80,0.16);
+    filter: brightness(1.08);
+  }
+</style>
+{% endblock %} {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="adminNavbar">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Users</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a></li>
-            </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Welcome, {{ session.username }}</a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url_for('auth.edit_profile') }}">Edit Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">ParkIT</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#adminNavbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="adminNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.manageUsers') }}"
+            >Users</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.search') }}">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <span class="navbar-text me-3"
+          >Welcome, {{ session.username or 'Admin' }}</span
+        >
+        <a
+          href="{{ url_for('admin.editProfile') }}"
+          class="btn btn-outline-light btn-sm me-2"
+          >Edit Profile</a
+        >
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm"
+          >Logout</a
+        >
+      </div>
     </div>
+  </div>
 </nav>
-{% endblock %}
+{% endblock %} {% block content %} {% with messages =
+get_flashed_messages(with_categories=true) %} {% if messages %} {% for category,
+message in messages %}
+<div
+  class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+  role="alert"
+>
+  {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %} {% endif %} {% endwith %}
 
-{% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Parking Lots</h2>
-    <a href="{{ url_for('admin.add_parking_lot') }}" class="btn btn-primary">+ Add New Lot</a>
+  <h2 class="curvy-title">Parking Lots</h2>
+  <a href="{{ url_for('admin.addParkingLot') }}" class="btn btn-primary"
+    >+ Add New Lot</a
+  >
 </div>
 
 <div class="row g-4">
-    {% for lot in parking_lots %}
-    <div class="col-xl-4 col-lg-6">
-        <div class="card shadow-sm h-100 lot-box">
-            <div class="card-body text-center">
-                <div class="d-flex justify-content-between">
-                    <h5 class="card-title">Parking#{{ lot.id }}</h5>
-                    <div>
-                        <a href="{{ url_for('admin.edit_parking_lot', lot_id=lot.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <form action="{{ url_for('admin.delete_parking_lot', lot_id=lot.id) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure?');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    </div>
-                </div>
-                <h6 class="card-subtitle mb-2 text-muted">(Occupied : {{ lot.spots|selectattr('status', 'equalto', 'O')|list|length }} / {{ lot.spots|length }})</h6>
-                <hr>
-                <div class="spots-container">
-                    {% for spot in lot.spots|sort(attribute='spot_number') %}
-                        {% if spot.status == 'A' %}
-                        <form action="{{ url_for('admin.delete_spot', spot_id=spot.id) }}" method="post" class="d-inline" onsubmit="return confirm('Delete this spot?');">
-                            <button type="submit" class="btn btn-success spot-btn" title="Spot #{{ spot.spot_number }}">{{ spot.status }}</button>
-                        </form>
-                        {% else %}
-                        <a href="{{ url_for('admin.spot_details', spot_id=spot.id) }}" class="btn btn-danger spot-btn" title="Spot #{{ spot.spot_number }}">{{ spot.status }}</a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
+  {% for lot in parkingLots %}
+  <div class="col-xl-4 col-lg-6">
+    <div class="card shadow-sm h-100 lot-box">
+      <div class="card-body text-center">
+        <div class="d-flex justify-content-between">
+          <h5 class="card-title">{{ lot.location }}</h5>
+          <div>
+            <a
+              href="{{ url_for('admin.editParkingLot', lotId=lot.id) }}"
+              class="btn btn-sm btn-outline-secondary"
+              >Edit</a
+            >
+            <form
+              action="{{ url_for('admin.deleteParkingLot', lotId=lot.id) }}"
+              method="post"
+              class="d-inline"
+              onsubmit="return confirm('Are you sure?');"
+            >
+              <button type="submit" class="btn btn-sm btn-outline-danger">
+                Delete
+              </button>
+            </form>
+          </div>
         </div>
+        <h6 class="card-subtitle mb-2 text-muted">
+          (Occupied : {{ lot.parkingSpots|selectattr('status', 'equalto',
+          'O')|list|length }} / {{ lot.parkingSpots|length }})
+        </h6>
+        <hr />
+        <div class="spots-container">
+          {% for spot in lot.parkingSpots|sort(attribute='spotNumber') %} {% if
+          spot.status == 'A' %}
+          <form
+            action="{{ url_for('admin.deleteSpot', spotId=spot.id) }}"
+            method="post"
+            class="d-inline"
+            onsubmit="return confirm('Delete this spot?');"
+          >
+            <button
+              type="submit"
+              class="btn btn-success spot-btn"
+              title="Spot #{{ spot.spotNumber }}"
+              style="background-color: green; border-color: green"
+            >
+              A
+            </button>
+          </form>
+          {% else %}
+          <a
+            href="{{ url_for('admin.spotDetails', spotId=spot.id) }}"
+            class="btn btn-danger spot-btn"
+            title="Spot #{{ spot.spotNumber }}"
+            style="background-color: red; border-color: red"
+            >O</a
+          >
+          {% endif %} {% endfor %}
+        </div>
+      </div>
     </div>
-    {% else %}
-    <div class="col">
-        <div class="alert alert-info">No parking lots found. Click 'Add New Lot' to create one.</div>
+  </div>
+  {% else %}
+  <div class="col">
+    <div class="alert alert-info">
+      No parking lots found. Click 'Add New Lot' to create one.
     </div>
-    {% endfor %}
+  </div>
+  {% endfor %}
 </div>
 {% endblock %}

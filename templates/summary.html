@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Summary{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  h2.curvy-title {
+    font-family: 'Pacifico', cursive;
+    font-size: 2.5rem;
+    color: #2d3a4b;
+    text-shadow: 2px 4px 12px rgba(44,62,80,0.12);
+    letter-spacing: 1px;
+  }
+  body, .card, .btn, .navbar, .table, .alert, .form-label, .form-control, .dropdown-menu {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+  }
+  .navbar .btn, .navbar .btn-outline-light, .navbar .btn-danger {
+    font-family: 'Lobster Two', cursive !important;
+    font-weight: 700 !important;
+  }
+  .card {
+    box-shadow: 0 4px 24px 0 rgba(44,62,80,0.10), 0 1.5px 4px 0 rgba(44,62,80,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 32px 0 rgba(44,62,80,0.18), 0 3px 8px 0 rgba(44,62,80,0.12);
+  }
+  .btn, .btn-primary, .btn-outline-secondary, .btn-outline-danger {
+    transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+    box-shadow: 0 2px 8px 0 rgba(44,62,80,0.08);
+  }
+  .btn:hover, .btn:focus {
+    box-shadow: 0 4px 16px 0 rgba(44,62,80,0.16);
+    filter: brightness(1.08);
+  }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.manageUsers') }}">Users</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.summary') }}">Summary</a></li>
+            </ul>
+            <div class="d-flex">
+                <span class="navbar-text me-3">Welcome, {{ session.username or 'Admin' }}</span>
+                <a href="{{ url_for('admin.editProfile') }}" class="btn btn-outline-light btn-sm me-2">Edit Profile</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">System Summary</h2>
+    
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Parking Lots</h5>
+                    <h2 class="text-primary">{{ summary.totalLots }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Spots</h5>
+                    <h2 class="text-info">{{ summary.totalSpots }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Occupied Spots</h5>
+                    <h2 class="text-danger">{{ summary.occupiedSpots }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Available Spots</h5>
+                    <h2 class="text-success">{{ summary.availableSpots }}</h2>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h2 class="text-secondary">{{ summary.totalUsers }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Occupancy Rate</h5>
+                </div>
+                <div class="card-body">
+                    {% if summary.totalSpots > 0 %}
+                        {% set occupancy_rate = (summary.occupiedSpots / summary.totalSpots * 100)|round(1) %}
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ occupancy_rate }}%" aria-valuenow="{{ occupancy_rate }}" aria-valuemin="0" aria-valuemax="100">{{ occupancy_rate }}%</div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No spots available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

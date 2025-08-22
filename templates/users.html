@@ -1,16 +1,34 @@
 {% extends "base.html" %}
 {% block title %}Users{% endblock %}
 
+{% block extra_head %}
+<style>
+  .navbar .btn, .navbar .btn-outline-light, .navbar .btn-danger {
+    font-family: 'Lobster Two', cursive !important;
+    font-weight: 700 !important;
+  }
+</style>
+{% endblock %}
+
 {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Panel</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.users') }}">Users</a></li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="adminNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('admin.manageUsers') }}">Users</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.summary') }}">Summary</a></li>
             </ul>
+            <div class="d-flex">
+                <span class="navbar-text me-3">Welcome, {{ session.username or 'Admin' }}</span>
+                <a href="{{ url_for('admin.editProfile') }}" class="btn btn-outline-light btn-sm me-2">Edit Profile</a>
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-sm">Logout</a>
+            </div>
         </div>
     </div>
 </nav>
@@ -36,8 +54,8 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.name }}</td>
-                    <td>{{ user.address }}</td>
-                    <td>{{ user.pincode }}</td>
+                    <td>{{ user.address.address }}</td>
+                    <td>{{ user.address.pincode }}</td>
                 </tr>
                 {% else %}
                 <tr>

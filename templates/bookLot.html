@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}Book Parking - {{ lot.location }}{%
+endblock %} {% block extra_head %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
+{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{{ url_for('user.book') }}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left me-2"></i>Back to Search
+    </a>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3>Book Parking at {{ lot.location }}</h3>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-info mb-4">
+            <h5>Parking Lot Details</h5>
+            <p><strong>Location:</strong> {{ lot.location }}</p>
+            <p><strong>Address:</strong> {{ lot.address.address }}</p>
+            <p><strong>Pincode:</strong> {{ lot.address.pincode }}</p>
+            <p><strong>Price:</strong> ₹{{ lot.pricePerHour }}/hour</p>
+            <p><strong>Total Spots:</strong> {{ lot.totalSpots }}</p>
+
+            {% set available_spots = lot.parkingSpots | selectattr('status',
+            'equalto', 'A') | list | length %}
+            <p><strong>Available Spots:</strong> {{ available_spots }}</p>
+          </div>
+
+          {% if available_spots > 0 %}
+          <form method="POST">
+            <div class="mb-3">
+              <label for="vehicleNumber" class="form-label"
+                >Vehicle Number</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="vehicleNumber"
+                name="vehicleNumber"
+                required
+                pattern="[A-Za-z0-9]{4,15}"
+                title="Vehicle number must be 4-15 alphanumeric characters"
+                placeholder="Enter your vehicle number"
+              />
+              <div class="form-text">
+                Please enter your vehicle registration number (4-15 alphanumeric
+                characters)
+              </div>
+            </div>
+
+            <div class="alert alert-warning">
+              <strong>Important:</strong>
+              <ul class="mb-0">
+                <li>Booking will be confirmed immediately</li>
+                <li>You will be charged ₹{{ lot.pricePerHour }}/hour</li>
+                <li>Please ensure your vehicle number is correct</li>
+              </ul>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">
+                Confirm Booking
+              </button>
+              <a href="{{ url_for('user.book') }}" class="btn btn-secondary"
+                >Cancel</a
+              >
+            </div>
+          </form>
+          {% else %}
+          <div class="alert alert-danger">
+            <h5>No Spots Available</h5>
+            <p>
+              Sorry, there are no available spots in this parking lot at the
+              moment.
+            </p>
+            <a href="{{ url_for('user.book') }}" class="btn btn-primary"
+              >Back to Search</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

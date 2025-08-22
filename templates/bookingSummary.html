@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Booking Summary{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Booking Summary</h2>
+    {% if record %}
+    <div class="card p-4">
+        <ul class="list-unstyled">
+            <li><strong>Parking Lot:</strong> {{ record.lotLocation }}</li>
+            <li><strong>Address:</strong> {{ record.lotAddress }}</li>
+            <li><strong>Pin Code:</strong> {{ record.lotPincode }}</li>
+            <li><strong>Spot Number:</strong> {{ record.parkingSpot.spotNumber if record.parkingSpot else 'N/A' }}</li>
+            <li><strong>Vehicle Number:</strong> {{ record.vehicleNumber }}</li>
+            <li><strong>Booking Time:</strong> {{ record.entryTime.strftime('%Y-%m-%d %H:%M:%S') }}</li>
+            <li><strong>Price at Booking:</strong> ₹{{ record.bookingPrice }}/hour</li>
+        </ul>
+        
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">No booking record found.</div>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 
