@@ -14,11 +14,15 @@ class Address(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    passwordHash = db.Column("password", db.String(256), nullable=False)
+    username = db.Column(db.String(80), unique=True, nullable=True)  # Nullable for OAuth users
+    passwordHash = db.Column("password", db.String(256), nullable=True)  # Nullable for OAuth users
     name = db.Column(db.String(80), nullable=False)
-    addressId = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=False)
+    addressId = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=True)  # Nullable for new users
     isAdmin = db.Column("admin", db.Boolean, default=False)
+    
+    # OAuth fields
+    google_id = db.Column(db.String(255), nullable=True, unique=True)
+    profile_picture = db.Column(db.String(500), nullable=True)
 
     address = db.relationship('Address', backref=db.backref('users', lazy=True))
 
@@ -26,6 +30,8 @@ class User(db.Model, UserMixin):
         self.passwordHash = generate_password_hash(password)
     
     def checkPassword(self, password):
+        if not self.passwordHash:
+            return False
         return check_password_hash(self.passwordHash, password)
 
 class ParkingLot(db.Model):
@@ -35,6 +41,8 @@ class ParkingLot(db.Model):
     addressId = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=False)
     totalSpots = db.Column(db.Integer, nullable=False)
     pricePerHour = db.Column("price", db.Integer, nullable=False)
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
 
     address = db.relationship('Address', backref=db.backref('parkingLots', lazy=True))
 

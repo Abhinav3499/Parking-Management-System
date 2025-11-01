@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from models.models import db, User, ParkingLot, ParkingRecord, ParkingSpot, Address
+from utils.geolocation import calculate_distance, find_nearby_lots, sort_by_proximity
 from datetime import datetime 
 import math
 import qrcode
@@ -208,3 +209,49 @@ def editProfile():
         return redirect(url_for('user.dashboard'))
     
     return render_template('userEditProfile.html', user=current_user)
+
+@userBp.route('/api/nearby-parking')
+def nearbyParking():
+    """API endpoint to get nearby parking lots based on GPS coordinates."""
+    try:
+        latitude = request.args.get('lat', type=float)
+        longitude = request.args.get('lon', type=float)
+        radius = request.args.get('radius', default=10, type=float)
+        
+        if not latitude or not longitude:
+            return jsonify({'error': 'Latitude and longitude are required'}), 400
+        
+        # Find parking lots within radius
+        nearby_lots = find_nearby_lots(latitude, longitude, radius)
+        
+        # Sort by proximity
+        sorted_lots = sort_by_proximity(nearby_lots)
+        
+        # Format response with availability info
+        response_data = []
+        for item in sorted_lots:
+            lot = item['lot']
+            available_spots = ParkingSpot.query.filter_by(
+                lotId=lot.id, status='A'
+            ).count()
+            
+            response_data.append({
+                'lot': {
+                    'id': lot.id,
+                    'location': lot.location,
+                    'address': lot.address.address,
+                    'pincode': lot.address.pincode,
+                    'price': lot.pricePerHour,
+                    'total_spots': lot.totalSpots,
+                    'latitude': lot.latitude,
+                    'longitude': lot.longitude
+                },
+                'distance': item['distance'],
+                'available_spots': available_spots
+            })
+        
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
