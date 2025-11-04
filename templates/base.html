@@ -1,49 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <style>
-      body {
-        min-height: 100vh;
-        background-color: #f8f9fa;
-      }
-      main.container {
-        background-color: white;
-        padding: 2rem;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      .spot-btn {
-        width: 40px;
-        height: 40px;
-      }
-      .lot-box .card-body {
-        min-height: 200px;
-      }
-      .spots-container {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.5rem;
-        max-width: 250px;
-        margin: auto;
-      }
-    </style>
-    {% block extra_head %} {% endblock %}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Parking System{% endblock %}</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body
-    style="background: linear-gradient(rgba(30, 41, 59, 0.6), rgba(30, 41, 59, 0.6)), url('{{ url_for('static', filename='parking.png') }}') no-repeat center center fixed !important; background-size: cover !important;"
-  >
-    {% block navbar %}{% endblock %}
-    <main class="container py-4">{% block content %}{% endblock %}</main>
-    {% block extra_body %}{% endblock %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Parking Management System - Find and book parking spots easily" />
+  <title>{% block title %}Parking System{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  {% block extra_head %} {% endblock %}
+</head>
+
+<body
+  style="background: linear-gradient(rgba(30, 41, 59, 0.6), rgba(30, 41, 59, 0.6)), url('{{ url_for('static', filename='images/parking.png') }}') no-repeat center center fixed !important; background-size: cover !important;">
+  {% block navbar %}{% endblock %}
+  <main class="container py-4">{% block content %}{% endblock %}</main>
+  {% block extra_body %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/geolocation.js') }}"></script>
+</body>
+
 </html>
