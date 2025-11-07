@@ -1,47 +1,57 @@
-{% set login_bg = True %} {% extends "base.html" %} {% block title %}Login{%
-endblock %} {% block content %}
+{% set login_bg = True %} {% extends "base.html" %} {% block title %}Login{% endblock %}
+
+{% block content %}
 <div class="container">
   <div class="row justify-content-center align-items-center vh-100">
     <div class="col-md-5">
-      <div class="card shadow-sm">
-        <div class="card-body p-5">
-          <h2 class="card-title text-center mb-4">Login</h2>
-          <!-- <p class="text-center">User and Admin can login here.</p> -->
-          {% with messages = get_flashed_messages(with_categories=true) %} {% if
-          messages %} {% for category, message in messages %}
-          <div
-            class="alert alert-{{ 'danger' if category == 'error' else 'success' }}"
-          >
-            {{ message }}
+      <div class="glass-card p-5">
+        <h2 class="text-center mb-4 fw-bold">Welcome Back</h2>
+        <p class="text-center text-secondary mb-4">Sign in to your parking account</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+          role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form action="/" method="post">
+          <div class="mb-3">
+            <label for="username" class="form-label">Email Address</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="your.email@example.com"
+              required />
           </div>
-          {% endfor %} {% endif %} {% endwith %}
-          <form action="/" method="post">
-            <div class="mb-3">
-              <label for="username" class="form-label">Email Address</label>
-              <input
-                type="text"
-                class="form-control"
-                id="username"
-                name="username"
-                required
-              />
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                name="password"
-                required
-              />
-            </div>
-            <div class="d-grid">
-              <button type="submit" class="btn btn-primary">Login</button>
-            </div>
-          </form>
-          <p class="text-center mt-3">
-            Don't have an account? <a href="/register">Create Account</a>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password"
+              required />
+          </div>
+          <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+          </div>
+        </form>
+
+        <div class="position-relative my-4">
+          <hr class="text-secondary">
+          <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-secondary">or continue
+            with</span>
+        </div>
+
+        <div class="d-grid mb-3">
+          <a href="/auth/google" class="btn btn-outline-dark btn-lg">
+            <i class="bi bi-google me-2"></i>
+            Sign in with Google
+          </a>
+        </div>
+
+        <div class="text-center">
+          <p class="text-secondary mb-0">
+            Don't have an account? <a href="/register" class="text-primary fw-semibold">Create Account</a>
           </p>
         </div>
       </div>
