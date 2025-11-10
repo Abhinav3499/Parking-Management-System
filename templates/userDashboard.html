@@ -4,16 +4,26 @@
 {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}">Parking App</a>
-        <div class="collapse navbar-collapse">
+        <a class="navbar-brand" href="{{ url_for('user.dashboard') }}"><i class="bi bi-p-square-fill"></i> ParkIT</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="userNavbar">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Welcome, {{ user.name }}</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Welcome, {{ user.name }}
+                    </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url_for('user.record') }}">View History</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('user.editProfile') }}">Edit Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.record') }}"><i
+                                    class="bi bi-clock-history"></i> View History</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.editProfile') }}"><i
+                                    class="bi bi-person-gear"></i> Edit Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}"><i
+                                    class="bi bi-box-arrow-right"></i> Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -24,41 +34,73 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Welcome, {{ user.name }}!</h1>
-            <p class="col-md-8 fs-4">Manage your parking bookings and find new spots.</p>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('user.book') }}" role="button">Book a New Spot</a>
+    <div class="hero-section mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1><i class="bi bi-geo-alt-fill"></i> Welcome, {{ user.name }}!</h1>
+                <p class="fs-5">Find and book parking spots near you with ease</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a class="btn btn-light btn-lg" href="{{ url_for('user.book') }}" role="button">
+                    <i class="bi bi-plus-circle"></i> Book a New Spot
+                </a>
+            </div>
         </div>
     </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card glass-card">
+                <div class="card-body text-center">
+                    <h5 class="mb-3"><i class="bi bi-crosshair"></i> Find Parking Near You</h5>
+                    <button id="findNearbyBtn" class="btn btn-primary"
+                        onclick="geoService.findNearbyParking('nearbyResults', 10)">
+                        <i class="bi bi-geo"></i> Use My Location
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="nearbyResults" class="mb-4"></div>
 
     {% if activeBookings %}
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">Active Bookings</h4>
+                    <h4 class="mb-0"><i class="bi bi-car-front-fill"></i> Active Bookings</h4>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row g-4">
                         {% for booking in activeBookings %}
-                        <div class="col-md-6 mb-3">
-                            <div class="card border-success">
+                        <div class="col-md-6">
+                            <div class="card border-success h-100 fade-in">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ booking.lotLocation }}</h5>
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="card-title mb-0"><i class="bi bi-pin-map-fill"></i> {{
+                                            booking.lotLocation }}</h5>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
                                     <div class="row">
                                         <div class="col-8">
                                             <p class="card-text">
-                                                <strong>Vehicle:</strong> {{ booking.vehicleNumber }}<br>
-                                                <strong>Spot:</strong> {{ booking.parkingSpot.spotNumber }}<br>
-                                                <strong>Entry Time:</strong> {{ booking.entryTime.strftime('%Y-%m-%d %H:%M') }}<br>
-                                                <strong>Price:</strong> ₹{{ booking.bookingPrice }}/hour<br>
-                                                <strong>Address:</strong> {{ booking.lotAddress }}
+                                                <i class="bi bi-car-front"></i> <strong>Vehicle:</strong> {{
+                                                booking.vehicleNumber }}<br>
+                                                <i class="bi bi-123"></i> <strong>Spot:</strong> {{
+                                                booking.parkingSpot.spotNumber }}<br>
+                                                <i class="bi bi-clock"></i> <strong>Entry:</strong> {{
+                                                booking.entryTime.strftime('%Y-%m-%d %H:%M') }}<br>
+                                                <i class="bi bi-currency-rupee"></i> <strong>Price:</strong> ₹{{
+                                                booking.bookingPrice }}/hour<br>
+                                                <i class="bi bi-geo-alt"></i> <strong>Address:</strong> {{
+                                                booking.lotAddress }}
                                             </p>
                                         </div>
                                         <div class="col-4 d-flex align-items-center justify-content-end">
-                                            <a href="{{ url_for('user.exit', recordId=booking.id) }}" class="btn btn-danger">
-                                                Exit Parking
+                                            <a href="{{ url_for('user.exit', recordId=booking.id) }}"
+                                                class="btn btn-danger">
+                                                <i class="bi bi-box-arrow-right"></i> Exit
                                             </a>
                                         </div>
                                     </div>
@@ -75,8 +117,9 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="alert alert-info">
-                <h5>No Active Bookings</h5>
-                <p>You don't have any active parking bookings at the moment.</p>
+                <h5><i class="bi bi-info-circle"></i> No Active Bookings</h5>
+                <p class="mb-0">You don't have any active parking bookings at the moment. <a
+                        href="{{ url_for('user.book') }}">Book a spot now</a>!</p>
             </div>
         </div>
     </div>
