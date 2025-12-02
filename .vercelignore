@@ -1,0 +1,37 @@
+# Virtual environments
+mad/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Database
+instance/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Large files
+*.mkv
+*.mp4
+*.avi
+Demo-Video.mkv
+MAD-I-Project-Report.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Environment
+.env
