@@ -1,74 +1,81 @@
-# Parking Management System
+# ParkIT - Parking Management System
 
-## Overview
-
-This is a web-based Parking Management System built with Flask. It allows users to book parking spots, manage bookings, and provides an admin dashboard for managing parking lots, users, and records. The system supports user authentication, role-based access (admin/user), and payment summary generation.
+A modern web app for finding and booking parking spots in Indian cities. Features GPS-based location detection, Google OAuth login, and JWT authentication.
 
 ## Features
 
-- User registration and login
-- Admin and user dashboards
-- Add, edit, and manage parking lots (admin)
-- Book and release parking spots (user)
-- View booking history and payment summary
-- QR code generation for payments
-- Search and filter parking lots
-- Profile management for users and admin
-- Secure password storage and authentication
+- **Smart Location Detection** - Find nearby parking lots using GPS
+- **Dual Authentication** - Login with password or Google account
+- **Real-time Availability** - Check parking spot availability instantly
+- **User Dashboard** - View and manage your bookings
+- **Admin Panel** - Manage parking lots and monitor bookings
+- **QR Code Booking** - Generate QR codes for your reservations
 
 ## Tech Stack
 
-- Python 3
-- Flask
-- Flask-Login
-- Flask-SQLAlchemy
-- SQLite (default, can be changed)
-- Jinja2 (templating)
-- QRCode (for payment QR generation)
+- **Backend**: Flask, SQLAlchemy, Flask-Login
+- **Auth**: JWT tokens, Google OAuth (Authlib)
+- **Database**: SQLite (dev), PostgreSQL-ready (production)
+- **Frontend**: HTML, CSS (Glassmorphism), Vanilla JavaScript
+- **Deployment**: Vercel-ready with WSGI
 
-## Project Structure
+### Installation
 
-```
-app.py                  # Main application entry point
-requirements.txt        # Python dependencies
-controllers/            # Flask Blueprints for auth, user, admin
-models/                 # SQLAlchemy models
-static/                 # Static files (images, CSS, JS)
-templates/              # HTML templates (Jinja2)
-```
-
-## Setup Instructions
-
-1. **Clone the repository:**
-   ```
-   git clone <repo-url>
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Abhinav3499/Parking-Management-System.git
    cd Parking-Management-System
    ```
-2. **Create a virtual environment (optional but recommended):**
-   ```
-   python -m venv venv
-   .\venv\Scripts\activate
-   ```
-3. **Install dependencies:**
-   ```
+
+2. **Install dependencies**
+   ```bash
    pip install -r requirements.txt
    ```
-4. **Run the application:**
+
+3. **Set up environment variables**
+   
+   Create a `.env` file:
+   ```env
+   SECRET_KEY=your-secret-key-here
+   JWT_SECRET_KEY=your-jwt-secret
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GOOGLE_REDIRECT_URI=http://localhost:5000/auth/google/callback
    ```
+
+4. **Run the app**
+   ```bash
    python app.py
    ```
-5. **Access the app:**
-   Open your browser and go to [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-## Default Admin Login
+   Visit http://localhost:5000
 
-- Username: `admin`
-- Password: `admin`
+### Default Admin Access
+- **Username**: `admin`
+- **Password**: `admin`
 
-## Screenshots
+### Project Structure
+```
+├── app.py                 # Main application
+├── config.py              # Configuration
+├── controllers/           # Route handlers
+├── models/                # Database models
+├── utils/                 # JWT & OAuth utilities
+├── templates/             # HTML templates
+├── static/                # CSS, JS, images
+└── instance/              # Database (not in git)
+```
 
-Add screenshots of the dashboard, booking, and admin pages here.
+### Making Changes
 
-## License
+1. **Add a feature** - Create routes in `controllers/`
+2. **Update UI** - Edit templates in `templates/`
+3. **Modify styles** - Update `static/css/style.css`
+4. **Database changes** - Update models in `models/models.py`
 
-This project is for educational purposes.
+## Google OAuth Setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create OAuth 2.0 credentials
+3. Add authorized redirect URI: `http://localhost:5000/auth/google/callback`
+4. Copy Client ID and Secret to `.env`
