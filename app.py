@@ -41,10 +41,9 @@ def createApp():
 
     return app
 
+app = createApp()
+
 if __name__ == '__main__':
-    app = createApp()
-    
-    # Ensure instance directory exists
     import os
     instance_path = os.path.join(os.path.dirname(__file__), 'instance')
     os.makedirs(instance_path, exist_ok=True)
